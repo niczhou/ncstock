@@ -1,2 +1,2 @@
-# ncstock
-Stock test
+# Sto
+stock
