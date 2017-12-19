@@ -18,11 +18,13 @@ class HqAnalyst:
 
 
   def getIsBuyByCode(self,stockCode,startDate,endDate):
-    indexTup=("close","amount")
-    targetTup=(0.75,0.45)
-    for index in indexTup:
-##      print(index)
-      self.getMinMaxByIndex(stockCode,index,startDate,endDate)
+
+    if self.getIsBuyByClose(stockCode,startDate,endDate)=="false":
+      return "false"
+    elif self.getIsBuyByAmount(stockCode,startDate,endDate)=="false":
+      return "fasle"
+    else:
+      return "true"
 
   def getIsBuyByClose(self,stockCode,startDate,endDate):
     isBuyByClose="false"
@@ -30,37 +32,37 @@ class HqAnalyst:
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
-    minDate=self.getDateByIndexValue(stockCode,index,minIndex)   
+    minDate=self.getDateByIndexValue(stockCode,index,minIndex)
+    avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
+
+##    print(avgIndex)
     
     if minIndex/maxIndex<0.72:
-      if self.getDateDiff(maxDate,minDate)>15:
+      if minIndex/avgIndex<0.85:
         if self.getDateDiff(minDate,endDate)<5:
-          isBuyByClose=true
+          if self.getDateDiff(maxDate,minDate)>15:
+            isBuyByClose=true
 
     return isBuyByClose
 
   def getIsBuyByAmount(self,stockCode,startDate,endDate):
-    isBuyByClose="false"
+    isBuyByAmount="false"
     index="amount"
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
     minDate=self.getDateByIndexValue(stockCode,index,minIndex)
-    mmIndex=minIndex/maxIndex
-    mmDiff=self.getDateDiff(maxDate,minDate)
-    meDiff=self.getDateDiff(minDate,endDate)
-    print(maxIndex)
-    print(maxDate)
-    print(minIndex)
-    print(minDate)
-    print(mmDiff)
-    
-    if mmDiff>15:
-      if meDiff<5:
-        if mmIndex<0.72:
-          isBuyByClose=true
+    avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
 
-    return isBuyByClose
+##    print(avgIndex)
+    
+    if minIndex/maxIndex<0.33:
+      if minIndex/avgIndex<0.42:
+        if self.getDateDiff(minDate,endDate)<5:
+          if self.getDateDiff(maxDate,minDate)>15:
+            isBuyByClose=true
+
+    return isBuyByAmount
 	
   def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
     self.__sql="SELECT MIN("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
@@ -81,10 +83,12 @@ class HqAnalyst:
     return result[0]
   
   def getAvgByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT AVG(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
+    self.__sql="SELECT AVG("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
-##    print(minIndex/maxIndex)
-    return minIndex/maxIndex
+##    print(self.__sql)
+    self.__cursor.execute(self.__sql)
+    result=self.__cursor.fetchone()
+    return result[0]
     
   def getDateByIndexValue(self,stockCode,stockIndex,stockValue):
     self.__sql="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE "+str(stockIndex)+"='"+str(stockValue)+"'"
