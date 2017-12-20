@@ -1,5 +1,6 @@
 #coding=utf-8
 import pymysql
+from HqUtil import HqUtil
 
 class HqAnalyst:
   __conn=None
@@ -17,11 +18,13 @@ class HqAnalyst:
 ##    self.__conn.close()
 
 
-  def getIsBuyByCode(self,stockCode,startDate,endDate):
+  def getIsBuyByCode(self,stockCode,inputDate,analDays):
+    mUtil=HqUtil()
+    startDate=mUtil.getStartDate(inputDate,analDays,self.__conn)
 
-    if self.getIsBuyByClose(stockCode,startDate,endDate)=="false":
+    if self.getIsBuyByClose(stockCode,startDate,inputDate)=="false":
       return "false"
-    elif self.getIsBuyByAmount(stockCode,startDate,endDate)=="false":
+    elif self.getIsBuyByAmount(stockCode,startDate,inputDate)=="false":
       return "fasle"
     else:
       return "true"
