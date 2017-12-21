@@ -10,5 +10,16 @@ class HqUtil:
         result=cursor.fetchone()
         return result[0]
       
-
-      
+    def indexOfList(self,element,mArray):
+        mList=None
+        if type(mArray)=='tuple':
+            mList=list(mArray)
+        elif type(mArray)=='list':
+            mList=mArray
+                        
+        if element in mList:
+            mIndex=mList.index(element)
+        else:
+             mIndex=-1
+             
+        return mIndex

@@ -22,11 +22,11 @@ mUtil=HqUtil()
 print(mUtil.getStartDate("20171127",7,conn))
 
 mHs=HsUpdater(conn)
-# mHs.updateListsz('C:/demo/nzstock/input/20171203深圳A股列表.xlsx')
-a=time.time()
-print(a)
-b=time.strptime(a,"%Y%m%d")
-print(a+"=>"+b)
+mHs.updateListsz('C:/demo/nzstock/input/20171203深圳A股列表.xlsx')
+# a=time.time()
+# print(a)
+# b=time.strptime(a,"%Y%m%d")
+# print(a+"=>"+b)
 
 
 conn.close()
