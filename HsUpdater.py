@@ -24,10 +24,11 @@ class HsUpdater:
                 result=self.__cursor.fetchone()            
                 if result==None:
                     sql="INSERT INTO listsz (stock_code) VALUES ('" +str(cel)+"')"
-                    print(cel+":"+sql)
+#                     print(cel+":"+sql)
                     self.__cursor.execute(sql)
     
     def updateListsh(self,xlpath):
+        print("updatesh")
         mBook=xlrd.open_workbook(xlpath)
         mSheet=mBook.sheets()[0]
         
@@ -37,8 +38,8 @@ class HsUpdater:
                 self.__cursor.execute(sql)
                 result=self.__cursor.fetchone()
                 if result==None:
-                    sql="INSERT INTO listsz(stock_code) VALUES('"+str(cel)+"')"
-                    print(cel+":"+sql)
+                    sql="INSERT INTO listsh(stock_code) VALUES('"+str(cel)+"')"
+#                     print(cel+":"+sql)
                     self.__cursor.execute(sql)
                 
     def createList(self,shsz):
