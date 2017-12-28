@@ -5,7 +5,7 @@ from HqUtil import HqUtil
 class HqAnalyst:
   __conn=None
   __cursor=None
-  __sql=''
+  __sq=''
 
   def __init__(self,connection):
 #     print('__init__')
@@ -60,39 +60,39 @@ class HqAnalyst:
     return isBuyByAmount
 	
   def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT MIN("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
-                +str(startDate)+" AND trade_date<"+str(endDate)
-    self.__cursor.execute(self.__sql)
+    self.__sq=concat("SELECT MIN(",str(stockIndex),") FROM `",str(stockCode),"` WHERE trade_date>"\
+                ,str(startDate)," AND trade_date<",str(endDate))
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
     return result[0]
 
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT MAX("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
-                +str(startDate)+" AND trade_date<"+str(endDate)
-    self.__cursor.execute(self.__sql)
+    self.__sq=concat("SELECT MAX(",str(stockIndex),") FROM `",str(stockCode),"` WHERE trade_date>"\
+                ,str(startDate)," AND trade_date<",str(endDate))
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
     return result[0]
   
   def getAvgByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT AVG("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
-                +str(startDate)+" AND trade_date<"+str(endDate)
-    self.__cursor.execute(self.__sql)
+    self.__sq=concat("SELECT AVG(",str(stockIndex),") FROM `",str(stockCode),"` WHERE trade_date>"\
+                ,str(startDate)," AND trade_date<",str(endDate))
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
     return result[0]
     
   def getDateByIndexValue(self,stockCode,stockIndex,stockValue):
-    self.__sql="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE "+str(stockIndex)+"='"+str(stockValue)+"'"
-    self.__cursor.execute(self.__sql)
+    self.__sq=concat("SELECT trade_date"," FROM `",str(stockCode),"` WHERE ",str(stockIndex),"='",str(stockValue),"'")
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
     return result[0]
 
   def getDateDiff(self,firstDate,secondDate):
-    self.__sql="SELECT MIN(ID) FROM listdate"+" WHERE trade_date>="+str(firstDate)
-    self.__cursor.execute(self.__sql)
+    self.__sq=concat("SELECT MIN(ID) FROM listdate"," WHERE trade_date>=",str(firstDate))
+    self.__cursor.execute(self.__sq)
     firstdateId=self.__cursor.fetchone()
     
-    self.__sql="SELECT MAX(ID) FROM listdate"+" WHERE trade_date<="+str(secondDate)
-    self.__cursor.execute(self.__sql)
+    self.__sq=concat("SELECT MAX(ID) FROM listdate"," WHERE trade_date<=",str(secondDate))
+    self.__cursor.execute(self.__sq)
     seconddateId=self.__cursor.fetchone()    
     
     dateDiff=seconddateId[0]-firstdateId[0]

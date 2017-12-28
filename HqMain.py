@@ -1,5 +1,4 @@
 #coding=utf-8
-
 import pymysql
 import time
 import datetime
@@ -25,14 +24,14 @@ mUtil = HqUtil()
 #   except:
 #     continue
 
-sql="SELECT stock_code FROM listsz"
-cursor.execute(sql)
+sq="SELECT stock_code FROM listsz"
+cursor.execute(sq)
 szArr=cursor.fetchall()
 print(str(len(szArr)))
 for i in range(0,len(szArr)):
   try:
     isBuy=mAnalyst.getIsBuyByCode(str(szArr[i][0]),"20170918",7)
-#     print(str(szArr[i][0])+":"+isBuy)
+    print(str(szArr[i][0])+":"+isBuy)
   except:
     continue
 
