@@ -30,8 +30,9 @@ szArr=cursor.fetchall()
 print(str(len(szArr)))
 for i in range(0,len(szArr)):
   try:
-    isBuy=mAnalyst.getIsBuyByCode(str(szArr[i][0]),"20170918",7)
-    print(str(szArr[i][0])+":"+isBuy)
+#     print(str(szArr[i][0]))
+    isBuy=mAnalyst.getIsBuyByCode(str(szArr[i][0]),"20170922",7)
+    print(str(szArr[i][0])+":"+str(isBuy))
   except:
     continue
 
