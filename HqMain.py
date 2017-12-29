@@ -13,28 +13,47 @@ cursor=conn.cursor()
 mAnalyst = HqAnalyst(conn)
 mUtil = HqUtil()
 
-# sql="SELECT stock_code FROM listsh"
-# cursor.execute(sql)
-# shArr=cursor.fetchall()
-# print(str(len(shArr)))
-# for i in range(0,len(shArr)):
-#   try:
-#     isBuy=mAnalyst.getIsBuyByCode(str(shArr[i][0]),"20170922",11)
-#     print(str(shArr[i][0])+":"+isBuy)
-#   except:
-#     continue
-
-sq="SELECT stock_code FROM listsz"
-cursor.execute(sq)
-szArr=cursor.fetchall()
-print(str(len(szArr)))
-for i in range(0,len(szArr)):
+sql="SELECT stock_code FROM listsz"
+cursor.execute(sql)
+shArr=cursor.fetchall()
+print(str(len(shArr)))
+for i in range(0,len(shArr)):
   try:
-#     print(str(szArr[i][0]))
-    isBuy=mAnalyst.getIsBuyByCode(str(szArr[i][0]),"20170922",7)
-    print(str(szArr[i][0])+":"+str(isBuy))
+    isBuy=mAnalyst.getIsBuy(shArr[i][0],"20170922",11)
+    print(shArr[i][0]+":"+isBuy)
   except:
     continue
+
+# print(str(mAnalyst.getAdjustedRatioByClose("000002","20170720","20170818")))
+# print(mAnalyst.getMinByIndex("000001","close","20170808","20170922"))
+# print(mAnalyst.getMinByIndex("000001","amount","20170808","20170922"))
+#  
+# print(mAnalyst.getDateByIndexValue("000001","close","10.02"))
+# print(mAnalyst.getDateByIndexValue("000001","amount","41765.31"))
+#  
+# print(mAnalyst.getMaxByIndex("000001","close","20170808","20170922"))
+# print(mAnalyst.getMaxByIndex("000001","amount","20170808","20170922"))
+# print(mAnalyst.getAvgByIndex("000001","close","20170808","20170922"))
+# print(mAnalyst.getAvgByIndex("000001","amount","20170808","20170922"))
+#  
+# print(mAnalyst.getDateDiff("20170922","20170808"))
+#  
+# print(str(mAnalyst.getIsBuyByClose("000001","20170808","20170922")))
+# print(str(mAnalyst.getIsBuyByAmount("000001","20170808","20170922")))
+# print(str(mAnalyst.getIsBuy("000016","20170922",33)))
+
+
+# sq="SELECT stock_code FROM listsz"
+# cursor.execute(sq)
+# szArr=cursor.fetchall()
+# print(str(len(szArr)))
+# for i in range(0,len(szArr)):
+#   try:
+# #     print(str(szArr[i][0]))
+#     isBuy=mAnalyst.getIsBuyByCode(str(szArr[i][0]),"20170922",7)
+#     print(str(szArr[i][0])+":"+str(isBuy))
+#   except:
+#     continue
 
 # startDate=mUtil.getStartDate("20170922",9,conn)
 # print(startDate)
