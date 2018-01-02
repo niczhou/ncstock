@@ -1,112 +1,116 @@
 #coding=utf-8
 import pymysql
+from HqUtil import HqUtil
 
 class HqAnalyst:
   __conn=None
   __cursor=None
-  __sql=''
+  __sq=''
 
   def __init__(self,connection):
-    print('__init__')
+#     print('__init__')
     self.__conn=connection
     self.__cursor=connection.cursor()
     
   def __del__(self):
     print("__del__")
-##    self.__cursor.close()
-##    self.__conn.close()
 
-
-  def getIsBuyByCode(self,stockCode,startDate,endDate):
-    indexTup=("close","amount")
-    targetTup=(0.75,0.45)
-    for index in indexTup:
-##      print(index)
-      self.getMinMaxByIndex(stockCode,index,startDate,endDate)
+  def getIsBuy(self,stockCode,inputDate,analDays):
+    mUtil=HqUtil()
+    startDate=mUtil.getStartDate(inputDate,analDays,self.__conn)
+#     if self.getIsBuyByClose(stockCode,startDate,inputDate)==False:
+#       return False
+    if self.getIsBuyByAmount(stockCode,startDate,inputDate)==False:
+      return False
+    else:
+      return True
 
   def getIsBuyByClose(self,stockCode,startDate,endDate):
-    isBuyByClose="false"
+    isBuyByClose=False
     index="close"
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
-    minDate=self.getDateByIndexValue(stockCode,index,minIndex)   
+    minDate=self.getDateByIndexValue(stockCode,index,minIndex)
+    avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
     
-    if minIndex/maxIndex<0.72:
-      if self.getDateDiff(maxDate,minDate)>15:
-        if self.getDateDiff(minDate,endDate)<5:
-          isBuyByClose=true
-
+    if minIndex/maxIndex<0.76:
+        if minIndex/avgIndex<0.87:
+#     double check with forward answer authority
+            if self.getAdjustedRatioByClose(stockCode, startDate, endDate)<0.76:
+                if self.getDateDiff(minDate,endDate)<4:
+                    if self.getDateDiff(maxDate,minDate)>6:
+                        isBuyByClose=True
+    print(str(stockCode)+" clo:"+str(isBuyByClose)+" max:"+str(maxIndex)+"-"+str(maxDate)+"|min:"+str(minIndex)+"-"++"|avg:"+str(avgIndex))
     return isBuyByClose
 
   def getIsBuyByAmount(self,stockCode,startDate,endDate):
-    isBuyByClose="false"
+    isBuyByAmount=False
     index="amount"
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
     minDate=self.getDateByIndexValue(stockCode,index,minIndex)
-    mmIndex=minIndex/maxIndex
-    mmDiff=self.getDateDiff(maxDate,minDate)
-    meDiff=self.getDateDiff(minDate,endDate)
-    print(maxIndex)
-    print(maxDate)
-    print(minIndex)
-    print(minDate)
-    print(mmDiff)
+    avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
     
-    if mmDiff>15:
-      if meDiff<5:
-        if mmIndex<0.72:
-          isBuyByClose=true
-
-    return isBuyByClose
+    if minIndex/maxIndex<0.41:
+      if minIndex/avgIndex<0.54:
+        if self.getDateDiff(minDate,endDate)<4:
+          if self.getDateDiff(maxDate,minDate)>6:
+            isBuyByClose=True
+    print(str(stockCode)+" amo:"+str(isBuyByAmount)+" max:"+str(maxIndex)+"-"+str(maxDate)+"|min:"+str(minIndex)+"-"+str(minDate)+"|avg:"+str(avgIndex))
+    return isBuyByAmount
 	
   def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT MIN("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
+    self.__sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
-##    print(self.__sql)
-    self.__cursor.execute(self.__sql)
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
-##    print(result)
     return result[0]
 
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT MAX("+str(stockIndex)+") FROM `"+str(stockCode)+"` WHERE trade_date>"\
+    self.__sq="SELECT MAX(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
-##    print(self.__sql)
-    self.__cursor.execute(self.__sql)
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
-##    print(result)
     return result[0]
   
   def getAvgByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sql="SELECT AVG(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
+    self.__sq="SELECT AVG(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
-##    print(minIndex/maxIndex)
-    return minIndex/maxIndex
+    self.__cursor.execute(self.__sq)
+    result=self.__cursor.fetchone()
+    return result[0]
     
   def getDateByIndexValue(self,stockCode,stockIndex,stockValue):
-    self.__sql="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE "+str(stockIndex)+"='"+str(stockValue)+"'"
-##    print(self.__sql)
-    self.__cursor.execute(self.__sql)
+    self.__sq="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE `"+str(stockIndex)+"`='"+str(stockValue)+"'"
+    self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
-##    print(result)
     return result[0]
 
   def getDateDiff(self,firstDate,secondDate):
-    self.__sql="SELECT MIN(ID) FROM listdate"+" WHERE trade_date>="+str(firstDate)
-##    print(self.__sql)
-    self.__cursor.execute(self.__sql)
+    self.__sq="SELECT MIN(ID) FROM listdate"+" WHERE trade_date>="+str(firstDate)
+    self.__cursor.execute(self.__sq)
     firstdateId=self.__cursor.fetchone()
-##    print(firstdateId[0])
     
-    self.__sql="SELECT MAX(ID) FROM listdate"+" WHERE trade_date<="+str(secondDate)
-##    print(self.__sql)
-    self.__cursor.execute(self.__sql)
-    seconddateId=self.__cursor.fetchone()
-##    print(seconddateId[0])    
+    self.__sq="SELECT MAX(ID) FROM listdate"+" WHERE trade_date<="+str(secondDate)
+    self.__cursor.execute(self.__sq)
+    seconddateId=self.__cursor.fetchone()    
     
     dateDiff=seconddateId[0]-firstdateId[0]
     return dateDiff
   
+  def getAdjustedRatioByClose(self,stockCode,startDate,endDate):
+        self.__sq="SELECT `percent` FROM `"+stockCode+"` WHERE trade_date<="+endDate \
+          +" AND trade_date>"+startDate+" ORDER BY `percent` DESC"
+        self.__cursor.execute(self.__sq)
+        percArr=self.__cursor.fetchall()
+        ratio=1
+        if percArr!=None:
+            for i in range(0,len(percArr)):
+#                 print(str(ratio)+"|"+str(percArr[i][0]))
+                ratio=ratio*(100-percArr[i][0])/100
+                       
+        return ratio   
+                
+      
