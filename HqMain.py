@@ -8,33 +8,47 @@ from HqUtil import HqUtil
 from HsUpdater import HsUpdater
 from HsWorm import HsWorm
 from HqUpdater import HqUpdater
+import threadpool
 
-with open('return.txt', 'r') as f:
-  data = json.load(f)
-  print(isinstance(data,list))
-  hq=data[0]['hq']
-  print(isinstance(hq,list))
-mUpdater=HqUpdater()
-mUpdater.getHqlist(hq)
+# with open('return.txt', 'r') as f:
+#   data = json.load(f)
+#   hq=data[0]['hq']
+#   print(hq)
+# mUpdater=HqUpdater()
+# mUpdater.updateHq(hq,"600388","20170426","20170427")
 
+conn = pymysql.connect(host="localhost",user="root",passwd="",db="stock",charset="utf8")
+cursor=conn.cursor()
 
+ 
+mAnalyst = HqAnalyst(conn)
+mUtil = HqUtil()
+ 
+sq="SELECT stock_code FROM listsz"
+cursor.execute(sq)
+tupleSh=cursor.fetchall()
+listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
+# print(listSh)
+# print(isinstance(listSh,list))
 
-# conn = pymysql.connect(host="localhost",user="root",passwd="",db="stock",charset="utf8")
-# cursor=conn.cursor()
-# 
-# mAnalyst = HqAnalyst(conn)
-# mUtil = HqUtil()
-# 
-# sql="SELECT stock_code FROM listsz"
-# cursor.execute(sql)
-# shArr=cursor.fetchall()
-# print(str(len(shArr)))
-# for i in range(0,len(shArr)):
-#   try:
+# def analSh(stockCode):
+# #     print(str(stockCode))
+#     mAnalyst = HqAnalyst(conn)
+#     mAnalyst.getIsBuyByClose(stockCode,"20170826","20170922")
+#     
+# pool=threadpool.ThreadPool(8)
+# requests=threadpool.makeRequests(analSh, listSh)
+# [pool.putRequest(req) for req in requests]
+# pool.wait()
+
+for i in range(len(listSh)):
+  try:
+#     mAnalyst.getIsBuyByClose(listSh[i],"20170606","20170821")
+    mAnalyst.getIsBuyByAmount(shArr[i],"20170808","20170922")
 #     isBuy=mAnalyst.getIsBuy(shArr[i][0],"20170922",11)
 #     print(shArr[i][0]+":"+isBuy)
-#   except:
-#     continue
+  except:
+    continue
 
 # print(str(mAnalyst.getAdjustedRatioByClose("000002","20170720","20170818")))
 # print(mAnalyst.getMinByIndex("000001","close","20170808","20170922"))
