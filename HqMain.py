@@ -6,7 +6,7 @@ import json
 from HqAnalyst import HqAnalyst
 from HqUtil import HqUtil
 from HsUpdater import HsUpdater
-from HsWorm import HsWorm
+# from HsWorm import HsWorm
 from HqUpdater import HqUpdater
 import threadpool
 
@@ -31,24 +31,24 @@ listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
 # print(listSh)
 # print(isinstance(listSh,list))
 
-# def analSh(stockCode):
-# #     print(str(stockCode))
-#     mAnalyst = HqAnalyst(conn)
-#     mAnalyst.getIsBuyByClose(stockCode,"20170826","20170922")
-#     
-# pool=threadpool.ThreadPool(8)
-# requests=threadpool.makeRequests(analSh, listSh)
-# [pool.putRequest(req) for req in requests]
-# pool.wait()
+def analSh(stockCode):
+#     print(str(stockCode))
+    mAnalyst = HqUpdater()
+    mAnalyst.update(stockCode,"20171026","20171222")
+     
+pool=threadpool.ThreadPool(8)
+requests=threadpool.makeRequests(analSh, listSh)
+[pool.putRequest(req) for req in requests]
+pool.wait()
 
-for i in range(len(listSh)):
-  try:
-#     mAnalyst.getIsBuyByClose(listSh[i],"20170606","20170821")
-    mAnalyst.getIsBuyByAmount(shArr[i],"20170808","20170922")
-#     isBuy=mAnalyst.getIsBuy(shArr[i][0],"20170922",11)
-#     print(shArr[i][0]+":"+isBuy)
-  except:
-    continue
+# for i in range(len(listSh)):
+#   try:
+# #     mAnalyst.getIsBuyByClose(listSh[i],"20170606","20170821")
+#     mAnalyst.getIsBuyByAmount(shArr[i],"20170808","20170922")
+# #     isBuy=mAnalyst.getIsBuy(shArr[i][0],"20170922",11)
+# #     print(shArr[i][0]+":"+isBuy)
+#   except:
+#     continue
 
 # print(str(mAnalyst.getAdjustedRatioByClose("000002","20170720","20170818")))
 # print(mAnalyst.getMinByIndex("000001","close","20170808","20170922"))

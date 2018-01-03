@@ -11,8 +11,8 @@ class HqUpdater:
 # '               ["2017-04-26","14.05","14.05","1.28","10.02%","14.05","14.05","29886","4198.93","0.28%"]],"code":"cn_600388"}]
 # 'non-existence  [{"status":2,"msg":"cn_600002 non-existent","code":"cn_600002"}]
 # 'non-trade      {}
-    def updateHq(self,hq,stockCode,startDate,endDate):
-#         hq=self.getHq(stockcode, startDate, endDate)
+    def updateHq(self,stockCode,startDate,endDate):
+        hq=self.getHq(stockcode, startDate, endDate)
         if isinstance(hq, list):         
 #             listHq=[['' for row in range(10)] for col in range(len(hq))]
             index=''
