@@ -9,47 +9,48 @@ from HsUpdater import HsUpdater
 # from HsWorm import HsWorm
 from HqUpdater import HqUpdater
 import threadpool
-
-# with open('return.txt', 'r') as f:
-#   data = json.load(f)
-#   hq=data[0]['hq']
-#   print(hq)
-# mUpdater=HqUpdater()
-# mUpdater.updateHq(hq,"600388","20170426","20170427")
+from test._test_multiprocessing import exception_throwing_generator
 
 conn = pymysql.connect(host="localhost",user="root",passwd="",db="stock",charset="utf8")
 cursor=conn.cursor()
 
- 
-mAnalyst = HqAnalyst(conn)
+mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
- 
+  
 sq="SELECT stock_code FROM listsz"
 cursor.execute(sq)
 tupleSh=cursor.fetchall()
 listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
-# print(listSh)
-# print(isinstance(listSh,list))
+ 
+# print(mAnalyst.getAvgByIndex(listSh[0],'amount',"20171111","20180103"))
+# # mAnalyst.getIsBuyByClose(listSh[3],"20171111","20180103")
+# mAnalyst.getIsBuyByAmount(listSh[0],"20171111","20180103")
+#  
+for i in range(len(listSh)):
+    mAnalyst.getIsBuyByClose(listSh[i],"20171111","20180103")
+#     mAnalyst.getIsBuyByAmount(listSh[i],"20171111","20180104")
 
-def analSh(stockCode):
-#     print(str(stockCode))
-    mAnalyst = HqUpdater()
-    mAnalyst.update(stockCode,"20171026","20171222")
-     
-pool=threadpool.ThreadPool(8)
-requests=threadpool.makeRequests(analSh, listSh)
-[pool.putRequest(req) for req in requests]
-pool.wait()
 
-# for i in range(len(listSh)):
-#   try:
-# #     mAnalyst.getIsBuyByClose(listSh[i],"20170606","20170821")
-#     mAnalyst.getIsBuyByAmount(shArr[i],"20170808","20170922")
-# #     isBuy=mAnalyst.getIsBuy(shArr[i][0],"20170922",11)
-# #     print(shArr[i][0]+":"+isBuy)
-#   except:
-#     continue
+# def analSh(stockCode):
+# #     print(str(stockCode))
+#     mAnalyst = HqAnalyst(conn)
+#     mAnalyst.getIsBuyByClose(stockCode,"20171026","20180103")
+#      
+# pool=threadpool.ThreadPool(8)
+# requests=threadpool.makeRequests(analSh, listSh)
+# [pool.putRequest(req) for req in requests]
+# pool.wait()
 
+
+# stockIndex='amount'
+# stockCode='600000'
+# startDate='20171111'
+# endDate='20180103'
+# __sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"+str(startDate)+" AND trade_date<"+str(endDate)
+# cursor.execute(__sq)
+# res=cursor.fetchone()
+# print(str(type(res[0])))
+      
 # print(str(mAnalyst.getAdjustedRatioByClose("000002","20170720","20170818")))
 # print(mAnalyst.getMinByIndex("000001","close","20170808","20170922"))
 # print(mAnalyst.getMinByIndex("000001","amount","20170808","20170922"))
@@ -115,4 +116,4 @@ pool.wait()
 # print(a+"=>"+b)
 
 
-# conn.close()
+conn.close()

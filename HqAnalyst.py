@@ -25,104 +25,118 @@ class HqAnalyst:
 #       return False
     else:
       return True
-
+#####close#######################close###########################close######################
   def getIsBuyByClose(self,stockCode,startDate,endDate):
-    isBuyByClose=False
     index="close"
+    isBuy=False
+    maxIndex=minIndex=avgIndex=0.00
+    maxDate=minDate='19500101'    
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
     minDate=self.getDateByIndexValue(stockCode,index,minIndex)
     avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
     
-    if minIndex!=0:
+    minMax=minAvg=aRatio=0.0
+    minEndDiff=maxMinDiff=0
+#     print(self.getMaxByIndex(stockCode,index,startDate,endDate))
+    if maxIndex!=0:
         minMax=minIndex/maxIndex
         if minMax<0.78:
             if avgIndex!=0:
                 minAvg=minIndex/avgIndex
-                if minAvg<0.92:
+                if minAvg<0.87:
         #     double check with forward answer authority
                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
                     if aRatio<0.78:
                         minEndDiff=self.getDateDiff(minDate,endDate)
-                        if minEndDiff<3:
+                        if minEndDiff<4:
                             maxMinDiff=self.getDateDiff(maxDate,minDate)
-                            if maxMinDiff>6:
-                                isBuyByClose=True
-    if isBuyByClose==True:
-        print(str(stockCode)+" clo:"+str(isBuyByClose)+" max:"+str(maxIndex)+"-"+str(maxDate)+"|min:"+str(minIndex)+"-"+str(minDate)+"|avg:"+str(avgIndex))
-        print(str(stockCode)+" m/m:"+str(round(minMax,3))+" |m/a:"+str(round(minAvg,3)) \
-          +" |ratio:"+str(round(aRatio,3))+" |meDiff:"+str(minEndDiff)+"|mmDiff:"+str(maxMinDiff))
-    
-    return isBuyByClose      
+                            if maxMinDiff>7:
+                                isBuy=True
+    if isBuy==True:
+        print(str(stockCode)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+             
+    return isBuy     
 
-
+#####amount---------------------------amount--------------------------amount------------------------------
   def getIsBuyByAmount(self,stockCode,startDate,endDate):
-    isBuyByAmount=False
     index="amount"
+    isBuy=False
+    maxIndex=minIndex=avgIndex=0.00
+    maxDate=minDate='19500101'
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
     minDate=self.getDateByIndexValue(stockCode,index,minIndex)
     avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
     
-    if minIndex!=0:
+    minMax=minAvg=aRatio=0.0
+    minEndDiff=maxMinDiff=0
+    if maxIndex!=0:
         minMax=minIndex/maxIndex
-        if minMax<0.38:
+        if minMax<0.21:
             if avgIndex!=0:
                 minAvg=minIndex/avgIndex
-                if minAvg<0.52:
+                if minAvg<0.33:
         #     double check with forward answer authority
 #                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
 #                     if aRatio<0.78:
                     minEndDiff=self.getDateDiff(minDate,endDate)
-                    if minEndDiff<3:
+                    if minEndDiff<4:
                         maxMinDiff=self.getDateDiff(maxDate,minDate)
-                        if maxMinDiff>6:
-                            isBuyByAmount=True
-#     if isBuyByClose==True:
-    print(str(stockCode)+" amo:"+str(isBuyByClose)+" max:"+str(maxIndex)+"-"+str(maxDate)+"|min:"+str(minIndex)+"-"+str(minDate)+"|avg:"+str(avgIndex))
-    print(str(stockCode)+" m/m:"+str(round(minMax,3))+" |m/a:"+str(round(minAvg,3)) \
-      +" |meDiff:"+str(minEndDiff)+"|mmDiff:"+str(maxMinDiff))
+                        if maxMinDiff>16:
+                            isBuy=True
+    if isBuy==True:
+        print(str(stockCode)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
     
-    return isBuyByAmount     
-	
-  def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
-    self.__sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
-                +str(startDate)+" AND trade_date<"+str(endDate)
-    self.__cursor.execute(self.__sq)
-    result=self.__cursor.fetchone()
-    if result!=None:
-        return result[0]
-    else:
-        return 0
-
+    return isBuy     
+#####################################################################################################	
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
     self.__sq="SELECT MAX(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
     self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
-    if result!=None:
+#     print(stockCode+' max:'+str(result[0]))    
+    if result[0]:
         return result[0]
     else:
-        return 0
-  
+        return 0.00
+    
+  def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
+    self.__sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
+                +str(startDate)+" AND trade_date<"+str(endDate)
+    self.__cursor.execute(self.__sq)
+    result=self.__cursor.fetchone()
+#     print(stockCode+' min:'+str(result[0]))    
+    if result[0]:
+        return result[0]
+    else:
+        return 0.00
+
   def getAvgByIndex(self,stockCode,stockIndex,startDate,endDate):
     self.__sq="SELECT AVG(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
     self.__cursor.execute(self.__sq)
     result=self.__cursor.fetchone()
-    if result!=None:
-        return result[0]
+#     print(stockCode+' avg:'+str(result[0]))
+    if result[0]:
+        return round(result[0],2)
     else:
-        return 0
+        return 0.00
     
   def getDateByIndexValue(self,stockCode,stockIndex,stockValue):
     if stockValue!=None and stockValue!=0:  
         self.__sq="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE `"+str(stockIndex)+"`='"+str(stockValue)+"'"
         self.__cursor.execute(self.__sq)
         result=self.__cursor.fetchone()
-        if result!=None:
+        if result[0]:
             return result[0]
         else:
             return 0
