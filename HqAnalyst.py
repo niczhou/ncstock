@@ -42,13 +42,13 @@ class HqAnalyst:
 #     print(self.getMaxByIndex(stockCode,index,startDate,endDate))
     if maxIndex!=0:
         minMax=minIndex/maxIndex
-        if minMax<0.78:
+        if minMax<0.81:
             if avgIndex!=0:
                 minAvg=minIndex/avgIndex
                 if minAvg<0.87:
         #     double check with forward answer authority
                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
-                    if aRatio<0.78:
+                    if aRatio<0.81:
                         minEndDiff=self.getDateDiff(minDate,endDate)
                         if minEndDiff<4:
                             maxMinDiff=self.getDateDiff(maxDate,minDate)

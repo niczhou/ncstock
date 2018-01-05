@@ -16,18 +16,21 @@ cursor=conn.cursor()
 
 mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
+mHsUpdater=HsUpdater(conn)
   
 sq="SELECT stock_code FROM listsz"
 cursor.execute(sq)
 tupleSh=cursor.fetchall()
 listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
+
+mHsUpdater.createCodeTable('002864')
  
 # print(mAnalyst.getAvgByIndex(listSh[0],'amount',"20171111","20180103"))
 # # mAnalyst.getIsBuyByClose(listSh[3],"20171111","20180103")
 # mAnalyst.getIsBuyByAmount(listSh[0],"20171111","20180103")
 #  
-for i in range(len(listSh)):
-    mAnalyst.getIsBuyByClose(listSh[i],"20171111","20180103")
+# for i in range(len(listSh)):
+#     mAnalyst.getIsBuyByClose(listSh[i],"20171111","20180103")
 #     mAnalyst.getIsBuyByAmount(listSh[i],"20171111","20180104")
 
 
