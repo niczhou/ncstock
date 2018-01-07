@@ -11,8 +11,24 @@ class HqUpdater:
 # '               ["2017-04-26","14.05","14.05","1.28","10.02%","14.05","14.05","29886","4198.93","0.28%"]],"code":"cn_600388"}]
 # 'non-existence  [{"status":2,"msg":"cn_600002 non-existent","code":"cn_600002"}]
 # 'non-trade      {}
-    def updateHq(self,stockCode,startDate,endDate):
-        hq=self.getHq(stockcode, startDate, endDate)
+    __conn=None
+    __cursor=None
+    
+    def __init__(self,connection):
+        self.__conn=connection
+        self.__cursor=connection.cursor()    
+
+    def updateHqsh(self):
+        sq="SELECT stock_code FROM listsh"
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchall()
+        listSh=[result[i][0] for i in range(len(result))]
+        for j in range(len(listSh)):
+            self.updateCodeHq(listSh[j],"20170601","20180107")
+            
+    def updateCodeHq(self,stockCode,startDate,endDate):
+        hq=self.getHq(stockCode, startDate, endDate)
+        print(hq)
         if isinstance(hq, list):         
 #             listHq=[['' for row in range(10)] for col in range(len(hq))]
             index=''
@@ -53,9 +69,9 @@ class HqUpdater:
             
       
     
-    def getHq(stockCode,startDate,endDate):
-        url="http://q.stock.sohu.com/hisHq?code=cn_" \
-             +stockCode+"&start=" + startDate + "&end=" + endDate
+    def getHq(self,stockCode,startDate,endDate):
+        url="http://q.stock.sohu.com/hisHq?code=cn_"+str(int(stockCode))\
+            +"&start=" +str(int(startDate)) + "&end=" +str(int(endDate))
         mDict=self.parseUrl(url)
         if 'hq' in mDict:
             hq=mDict['hq']

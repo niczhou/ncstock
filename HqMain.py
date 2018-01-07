@@ -11,24 +11,32 @@ from HqUpdater import HqUpdater
 import threadpool
 from test._test_multiprocessing import exception_throwing_generator
 
-conn = pymysql.connect(host="localhost",user="root",passwd="",db="stock",charset="utf8")
+conn = pymysql.connect(host="localhost",user="root",passwd="",db="nxstock",charset="utf8")
 cursor=conn.cursor()
-
+ 
+mHsUpdater=HsUpdater(conn)
+mHqUpdate=HqUpdater(conn)
 mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
-mHsUpdater=HsUpdater(conn)
-  
-sq="SELECT stock_code FROM listsz"
-cursor.execute(sq)
-tupleSh=cursor.fetchall()
-listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
 
-mHsUpdater.createCodeTable('002864')
- 
+# mHsUpdater.createList("sh")
+# mHsUpdater.createList("sz")   
+# mHsUpdater.updateListsh("input/20180107listsh.xlsx")
+# mHsUpdater.updateListsz("input/20180107listsz.xlsx")
+# mHsUpdater.updateCodeTables()
+mHqUpdate.updateHqsh()
+
+# sq="SELECT stock_code FROM listsz"
+# cursor.execute(sq)
+# tupleSh=cursor.fetchall()
+# listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
+#     
+# mHsUpdater.createCodeTable('002864')
+    
 # print(mAnalyst.getAvgByIndex(listSh[0],'amount',"20171111","20180103"))
-# # mAnalyst.getIsBuyByClose(listSh[3],"20171111","20180103")
+# mAnalyst.getIsBuyByClose(listSh[3],"20171111","20180103")
 # mAnalyst.getIsBuyByAmount(listSh[0],"20171111","20180103")
-#  
+#   
 # for i in range(len(listSh)):
 #     mAnalyst.getIsBuyByClose(listSh[i],"20171111","20180103")
 #     mAnalyst.getIsBuyByAmount(listSh[i],"20171111","20180104")
