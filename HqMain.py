@@ -24,7 +24,9 @@ mUtil = HqUtil()
 # mHsUpdater.updateListsh("input/20180107listsh.xlsx")
 # mHsUpdater.updateListsz("input/20180107listsz.xlsx")
 # mHsUpdater.updateCodeTables()
+# mHqUpdate.updateCodeHq("000001","20170601","20180108")
 mHqUpdate.updateHqsh()
+mHqUpdate.updateHqsz()
 
 # sq="SELECT stock_code FROM listsz"
 # cursor.execute(sq)

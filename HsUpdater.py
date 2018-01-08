@@ -19,13 +19,13 @@ class HsUpdater:
         
         for cel in mSheet.col_values(5):
             if cel!="A股代码":        
-                sql="SELECT stock_code FROM listsz WHERE stock_code ='"+str(int(cel))+"'"
-                self.__cursor.execute(sql)
+                sq="SELECT stock_code FROM listsz WHERE stock_code ='"+str(cel)+"'"
+                self.__cursor.execute(sq)
                 result=self.__cursor.fetchone()            
                 if result==None:
-                    sql="INSERT INTO listsz (stock_code) VALUES ('" +str(int(cel))+"')"
+                    sq="INSERT INTO listsz (stock_code) VALUES ('" +str(cel)+"')"
 #                     print(cel+":"+sql)
-                    self.__cursor.execute(sql)
+                    self.__cursor.execute(sq)
     
     def updateListsh(self,xlpath):
         print("updatesh")

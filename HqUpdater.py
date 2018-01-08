@@ -3,6 +3,7 @@ import json
 import time
 import urllib.request
 import urllib.error
+import threadpool
 
 class HqUpdater:
       
@@ -24,17 +25,25 @@ class HqUpdater:
         result=self.__cursor.fetchall()
         listSh=[result[i][0] for i in range(len(result))]
         for j in range(len(listSh)):
-            self.updateCodeHq(listSh[j],"20170601","20180107")
+            self.updateCodeHq(listSh[j],"20170601","20180108")
+            
+    def updateHqsz(self):
+        sq="SELECT stock_code FROM listsz"
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchall()
+        listSh=[result[i][0] for i in range(len(result))]
+        for j in range(len(listSz)):
+            self.updateCodeHq(listSz[j],"20170601","20180108")
             
     def updateCodeHq(self,stockCode,startDate,endDate):
         hq=self.getHq(stockCode, startDate, endDate)
-        print(hq)
+#         print(hq)
         if isinstance(hq, list):         
 #             listHq=[['' for row in range(10)] for col in range(len(hq))]
             index=''
             for i in range(len(hq))[::-1]:
-                sq="INSERT INTO `" + stockCode + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) VALUES("
-                print(hq[i])
+                sq="INSERT LOW_PRIORITY INTO `" + stockCode + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) VALUES("\
+#                 print(hq[i])
                 for j in range(10):
                     if j==0:
                         index=str(hq[i][j]).replace("-","")
@@ -47,7 +56,10 @@ class HqUpdater:
                         sq=sq+str(index)+","
                     else:
                         sq=sq+index+")"
+#                    check if record exists 
+#                 sq=sq+" WHERE NOT EXISTS (SELECT trade_date FROM `"+stockCode+"` WHERE trade_date="+str(hq[i][0]).replace("-","")+")"
                 print(sq)
+                self.__cursor.execute(sq)
 
                                
     def getListHq(self,hq):
@@ -70,17 +82,23 @@ class HqUpdater:
       
     
     def getHq(self,stockCode,startDate,endDate):
-        url="http://q.stock.sohu.com/hisHq?code=cn_"+str(int(stockCode))\
-            +"&start=" +str(int(startDate)) + "&end=" +str(int(endDate))
-        mDict=self.parseUrl(url)
-        if 'hq' in mDict:
-            hq=mDict['hq']
+        url="http://q.stock.sohu.com/hisHq?code=cn_"+str(stockCode)\
+            +"&start=" +str(startDate) + "&end=" +str(endDate)
+        jsonHq=self.parseUrl(url)
+        print("return:"+str(jsonHq))
+        if isinstance(jsonHq,list):
+            dictHq=jsonHq[0]
+            if 'hq' in dictHq:
+                hq=dictHq['hq']
+            else:
+                hq=[] 
         else:
             hq=[]
+        print("hq:"+str(hq)) 
         return hq
       
     def parseUrl(self,strUrl):  
         sHtml=urllib.request.urlopen(strUrl)
-        sDict=json.loads(sHtml.read().decode("utf-8"))
-        return sDict
+        lReturn=json.loads(sHtml.read().decode("utf-8"))
+        return lReturn
       
