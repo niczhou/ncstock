@@ -19,11 +19,11 @@ class HsUpdater:
         
         for cel in mSheet.col_values(5):
             if cel!="A股代码":        
-                sq="SELECT stock_code FROM listsz WHERE stock_code ='"+str(cel)+"'"
+                sq="SELECT stock_code FROM tablesz WHERE stock_code ='"+str(cel)+"'"
                 self.__cursor.execute(sq)
                 result=self.__cursor.fetchone()            
                 if result==None:
-                    sq="INSERT INTO listsz (stock_code) VALUES ('" +str(cel)+"')"
+                    sq="INSERT INTO tablesz (stock_code) VALUES ('" +str(cel)+"')"
 #                     print(cel+":"+sql)
                     self.__cursor.execute(sq)
     
@@ -34,11 +34,11 @@ class HsUpdater:
         
         for cel in mSheet.col_values(2):
             if cel!="A股代码":
-                sql="SELECT stock_code FROM listsh WHERE stock_code ='"+str(int(cel))+"'"
+                sql="SELECT stock_code FROM tablesh WHERE stock_code ='"+str(int(cel))+"'"
                 self.__cursor.execute(sql)
                 result=self.__cursor.fetchone()
                 if not result:
-                    sql="INSERT INTO listsh(stock_code) VALUES('"+str(int(cel))+"')"
+                    sql="INSERT INTO tablesh(stock_code) VALUES('"+str(int(cel))+"')"
 #                     print(cel+":"+sql)
                     self.__cursor.execute(sql)
                 
