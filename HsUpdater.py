@@ -34,9 +34,10 @@ class HsUpdater:
             
         for cel in listCode:
             if cel!="A股代码":        
-                sq="INSERT INTO "+shsz+"(stock_code) VALUES ('" +str(cel)+"')"\
-                    +"WHERE NOT EXISTS(SELECT stock_code FROM "+shsz+" WHERE stock_code="+cel+")"
-                
+                sq="INSERT INTO "+shsz+"(stock_code) VALUES ('" +str(cel)+"')"
+#                     +"WHERE NOT EXISTS(SELECT stock_code FROM "+shsz+" WHERE stock_code="+cel+")"
+#                 sq="INSERT INTO "+shsz+"(stock_code) VALUES ('" +str(cel)+"')"\
+#                     +"WHERE NOT EXISTS(SELECT stock_code FROM "+shsz+" WHERE stock_code="+cel+")"                
 #                     print(cel+":"+sql)
                 self.__cursor.execute(sq)
     
