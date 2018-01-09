@@ -1,5 +1,4 @@
 # My ignores
 backup/
 input/
-output/
-
+__pycache__/
