@@ -34,24 +34,29 @@ class HqUpdater:
 #             listHq=[['' for row in range(10)] for col in range(len(hq))]
             index=''
             for i in range(len(hq))[::-1]:
-                sq="INSERT INTO `" + stockCode + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) VALUES("\
+                sq="INSERT INTO `" + stockCode + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) SELECT "\
 #                 print(hq[i])
                 for j in range(10):
                     if j==0:
-                        index=str(hq[i][j]).replace("-","")
+                        index="'"+str(hq[i][j]).replace("-","")+"'"
                     elif j==4 or j==9:   
-                        index=str(hq[i][j]).replace("%","")
+                        index="'"+str(hq[i][j]).replace("%","")+"'"
                     else:
-                        index=hq[i][j]
+                        index="'"+hq[i][j]+"'"
 #                     listHq[i][j]=index
                     if j!=9:
                         sq=sq+str(index)+","
                     else:
-                        sq=sq+index+")"
 #                    check if record exists 
-#                 sq=sq+" WHERE NOT EXISTS (SELECT trade_date FROM `"+stockCode+"` WHERE trade_date="+str(hq[i][0]).replace("-","")+")"
-                print(sq)
-                self.__cursor.execute(sq)
+                        sq=sq+index+" FROM dual WHERE NOT EXISTS(SELECT trade_date FROM `"+str(stockCode)\
+                            +"` WHERE trade_date='"+str(hq[i][0]).replace("-","")+"')"
+#                 print(sq)
+                try:
+                    self.__cursor.execute(sq)
+                    print("updated:"+str(stockCode))
+                except:
+                    print("update error"+str(stockCode))
+                
     def updateTableDate(self):
         sq="SELECT stock_code FROM tablesz LIMIT 12"
         self.__cursor.execute(sq)
@@ -79,7 +84,7 @@ class HqUpdater:
         url="http://q.stock.sohu.com/hisHq?code=cn_"+str(stockCode)\
             +"&start=" +str(startDate) + "&end=" +str(endDate)
         jsonHq=self.parseUrl(url)
-        print("return:"+str(jsonHq))
+#         print("return:"+str(jsonHq))
         if isinstance(jsonHq,list):
             dictHq=jsonHq[0]
             if 'hq' in dictHq:
@@ -88,7 +93,7 @@ class HqUpdater:
                 hq=[] 
         else:
             hq=[]
-        print("hq:"+str(hq)) 
+#         print("hq:"+str(hq)) 
         return hq
       
     def parseUrl(self,strUrl):  

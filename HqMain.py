@@ -11,7 +11,7 @@ from HqUpdater import HqUpdater
 import threadpool
 from test._test_multiprocessing import exception_throwing_generator
 
-conn = pymysql.connect(host="localhost",user="root",passwd="",db="mstock",charset="utf8")
+conn = pymysql.connect(host="localhost",user="root",passwd="",db="nxstock",charset="utf8")
 cursor=conn.cursor()
  
 mHsUpdater=HsUpdater(conn)
@@ -24,12 +24,24 @@ mUtil = HqUtil()
 # mHsUpdater.updateTableHs("tablesh","res/20180107listsh.xlsx")
 # mHsUpdater.updateTableHs("tablesz","res/20180107listsz.xlsx")
 # mHsUpdater.createTableDate("tableDate") 
-mHsUpdater.updateTablesHs("tablesh")
+# mHsUpdater.updateTablesHs("tablesh")
+# mHsUpdater.updateTablesHs("tablesz")
 
-# sq="SELECT stock_code FROM listsh LIMIT 1000"
-# cursor.execute(sq)
-# tupleSh=cursor.fetchall()
-# listSh=[tupleSh[i][0] for i in range(len(tupleSh))]
+def updateHq(stockCode):
+    mHqUpdate.updateHqByCode(stockCode,"20170601","20180110")
+
+sq="SELECT stock_code FROM tablesz"
+cursor.execute(sq)
+tupleSh=cursor.fetchall()
+listSz=[tupleSh[i][0] for i in range(len(tupleSh))]
+print(listSz)
+
+for i in listSz:
+    updateHq(i)
+# pool=threadpool.ThreadPool(8)
+# requests=threadpool.makeRequests(updateHq,listSz)
+# [pool.putRequest(req) for req in requests]
+# pool.wait()
 #     
 # for i in range(len(listSh)):
 #     mAnalyst.getIsBuyByAmount(listSh[i],"20171111","20180108")

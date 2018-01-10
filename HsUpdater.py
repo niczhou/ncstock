@@ -16,7 +16,7 @@ class HsUpdater:
     def createTableHs(self,hsTableName):
         sq="CREATE TABLE IF NOT EXISTS "+hsTableName+"(id INT NOT NULL AUTO_INCREMENT,"\
         +"stock_code VARCHAR(8),stock_name VARCHAR(16),stock_ipo INT,"\
-        +"stock_total BIGINT,stock_circulation BIGINT,PRIMARY KEY(id), UNIQUE(stock_code,stock_name))" 
+        +"stock_total BIGINT,stock_circulation BIGINT,stock_url VARCHAR(255),PRIMARY KEY(id), UNIQUE(stock_code,stock_name))" 
 #             print(sq)
         self.__cursor.execute(sq)            
         
