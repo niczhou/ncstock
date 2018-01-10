@@ -19,7 +19,7 @@ class HqUpdater:
         self.__conn=connection
         self.__cursor=connection.cursor()    
 
-    def updateHqsh(self):
+    def updateHqByHs(self):
         sq="SELECT stock_code FROM listsh"
         self.__cursor.execute(sq)
         result=self.__cursor.fetchall()
@@ -27,15 +27,7 @@ class HqUpdater:
         for j in range(len(listSh)):
             self.updateCodeHq(listSh[j],"20170601","20180108")
             
-    def updateHqsz(self):
-        sq="SELECT stock_code FROM listsz"
-        self.__cursor.execute(sq)
-        result=self.__cursor.fetchall()
-        listSh=[result[i][0] for i in range(len(result))]
-        for j in range(len(listSz)):
-            self.updateCodeHq(listSz[j],"20170601","20180108")
-            
-    def updateCodeHq(self,stockCode,startDate,endDate):
+    def updateHqByCode(self,stockCode,startDate,endDate):
         hq=self.getHq(stockCode, startDate, endDate)
 #         print(hq)
         if isinstance(hq, list):         
@@ -60,8 +52,12 @@ class HqUpdater:
 #                 sq=sq+" WHERE NOT EXISTS (SELECT trade_date FROM `"+stockCode+"` WHERE trade_date="+str(hq[i][0]).replace("-","")+")"
                 print(sq)
                 self.__cursor.execute(sq)
-
-                               
+    def updateTableDate(self):
+        sq="SELECT stock_code FROM tablesz LIMIT 12"
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchall()
+        listTest=[result[i][0] for i in range(len(result))]
+###################################################################################                               
     def getListHq(self,hq):
         if isinstance(hq, list):         
             listHq=[['' for row in range(10)] for col in range(len(hq))]
@@ -76,10 +72,8 @@ class HqUpdater:
                     else:
                         index=hq[i][j]
                     listHq[i][j]=index
-                    print(listHq[i][j])
-            return listHq
-            
-      
+#                     print(listHq[i][j])
+            return listHq    
     
     def getHq(self,stockCode,startDate,endDate):
         url="http://q.stock.sohu.com/hisHq?code=cn_"+str(stockCode)\

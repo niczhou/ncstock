@@ -21,12 +21,10 @@ mUtil = HqUtil()
 
 # mHsUpdater.createTableHs("tablesh")
 # mHsUpdater.createTableHs("tablesz")   
-# mHsUpdater.updateTableHs("tablesz","res/20180107listsz.xlsx")
 # mHsUpdater.updateTableHs("tablesh","res/20180107listsh.xlsx")
-mHsUpdater.updateCodeTables()
-# mHqUpdate.updateCodeHq("000001","20170601","20180108")
-# mHqUpdate.updateHqsh()
-# mHqUpdate.updateHqsz()
+# mHsUpdater.updateTableHs("tablesz","res/20180107listsz.xlsx")
+# mHsUpdater.createTableDate("tableDate") 
+mHsUpdater.updateTablesHs("tablesh")
 
 # sq="SELECT stock_code FROM listsh LIMIT 1000"
 # cursor.execute(sq)
