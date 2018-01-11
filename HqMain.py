@@ -11,41 +11,42 @@ from HqUpdater import HqUpdater
 import threadpool
 from test._test_multiprocessing import exception_throwing_generator
 
-conn = pymysql.connect(host="localhost",user="root",passwd="",db="nxstock",charset="utf8")
+conn = pymysql.connect(host="localhost",user="root",passwd="",db="nnstock",charset="utf8")
 cursor=conn.cursor()
  
 mHsUpdater=HsUpdater(conn)
-mHqUpdate=HqUpdater(conn)
+mHqUpdater=HqUpdater(conn)
 mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
 
+# sq="SELECT stock_code FROM tablesz LIMIT 12"
+# cursor.execute(sq)
+# result=cursor.fetchall()
+# listSz=[result[i][0] for i in range(len(result))]
+# # print(listSz)
+# 
+# for codeSz in listSz:
+# #     mAnalyst.getIsBuyByAmount(codeSz,20171111,20180110)
+#     mAnalyst.getIsBuyByClose(codeSz,20171111,20180108)
+    
 # mHsUpdater.createTableHs("tablesh")
 # mHsUpdater.createTableHs("tablesz")   
 # mHsUpdater.updateTableHs("tablesh","res/20180107listsh.xlsx")
 # mHsUpdater.updateTableHs("tablesz","res/20180107listsz.xlsx")
-# mHsUpdater.createTableDate("tableDate") 
-# mHsUpdater.updateTablesHs("tablesh")
-# mHsUpdater.updateTablesHs("tablesz")
+mHsUpdater.createTableDate("tableDate") 
+mHsUpdater.updateTablesHs("tablesh")
+mHsUpdater.updateTablesHs("tablesz")
+# mHsUpdater.updateTableDate()
 
-def updateHq(stockCode):
-    mHqUpdate.updateHqByCode(stockCode,"20170601","20180110")
-
-sq="SELECT stock_code FROM tablesz"
-cursor.execute(sq)
-tupleSh=cursor.fetchall()
-listSz=[tupleSh[i][0] for i in range(len(tupleSh))]
-print(listSz)
-
-for i in listSz:
-    updateHq(i)
+ 
+# 
+# for i in listSz:
+#     updateHq(i)
 # pool=threadpool.ThreadPool(8)
 # requests=threadpool.makeRequests(updateHq,listSz)
 # [pool.putRequest(req) for req in requests]
 # pool.wait()
 #     
-# for i in range(len(listSh)):
-#     mAnalyst.getIsBuyByAmount(listSh[i],"20171111","20180108")
-#     mAnalyst.getIsBuyByClose("600000","20171111","20180108")
 
 
 

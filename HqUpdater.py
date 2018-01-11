@@ -55,13 +55,7 @@ class HqUpdater:
                     self.__cursor.execute(sq)
                     print("updated:"+str(stockCode))
                 except:
-                    print("update error"+str(stockCode))
-                
-    def updateTableDate(self):
-        sq="SELECT stock_code FROM tablesz LIMIT 12"
-        self.__cursor.execute(sq)
-        result=self.__cursor.fetchall()
-        listTest=[result[i][0] for i in range(len(result))]
+                    print("update error"+str(stockCode))      
 ###################################################################################                               
     def getListHq(self,hq):
         if isinstance(hq, list):         

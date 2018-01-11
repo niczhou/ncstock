@@ -39,7 +39,7 @@ class HqAnalyst:
     minMax=minAvg=aRatio=0.0
     minEndDiff=maxMinDiff=0
 #     print(self.getMaxByIndex(stockCode,index,startDate,endDate))
-    if maxIndex!=0:
+    if maxIndex:
         minMax=minIndex/maxIndex
         if minMax<0.81:
             if avgIndex!=0:
@@ -54,7 +54,7 @@ class HqAnalyst:
                             if maxMinDiff>7:
                                 isBuy=True
 #     if isBuy==True:
-    print(str(stockCode)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+    print(str(stockCode)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
       +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
       +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
       +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
@@ -75,7 +75,7 @@ class HqAnalyst:
 
     minMax=minAvg=aRatio=0.0
     minEndDiff=maxMinDiff=0
-    if maxIndex!=0:
+    if maxIndex:
         minMax=minIndex/maxIndex
         if minMax<0.21:
             if avgIndex!=0:
@@ -99,83 +99,101 @@ class HqAnalyst:
 ######################amount################################amount###########################	
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
     sq="SELECT MAX(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>="\
-                +startDate+" AND trade_date<="+endDate
-    self.__cursor.execute(sq)
-    result=self.__cursor.fetchone()
-#     print(stockCode+stockIndex+' max:'+str(result[0]))    
-    if result:
-        if result[0]:
-            return float(result[0])
+                +str(startDate)+" AND trade_date<="+str(endDate)
+    try:
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchone()
+        if result:
+            if result[0]:
+#                 print(stockCode+stockIndex+' max:'+str(result[0])) 
+                return result[0]
+            else:
+                return 0
         else:
             return 0
-    else:
+    except:
         return 0
     
   def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
     sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>="\
                 +str(startDate)+" AND trade_date<="+str(endDate)
-    self.__cursor.execute(sq)
-    result=self.__cursor.fetchone()
-#     print(stockCode+stockIndex+' min:'+str(result[0]))    
-    if result:
-        if result[0]:
-            return float(result[0])
+    try:
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchone()
+        if result:
+            if result[0]:
+#                 print(stockCode+stockIndex+' min:'+str(result[0])) 
+                return result[0]
+            else:
+                return 0
         else:
             return 0
-    else:
+    except:
         return 0
 
   def getAvgByIndex(self,stockCode,stockIndex,startDate,endDate):
     sq="SELECT AVG(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
                 +str(startDate)+" AND trade_date<"+str(endDate)
-    self.__cursor.execute(sq)
-    result=self.__cursor.fetchone()
-#     print(stockCode+' avg:'+str(result[0]))
-    if result:
-        if result[0]:
-            return round(float(result[0]),2)
+    try:
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchone()
+        if result:
+            if result[0]:
+#                 print(stockCode+stockIndex+' avg:'+str(round(result[0],2))) 
+                return round(result[0],2)
+            else:
+                return 0
         else:
             return 0
-    else:
+    except:
         return 0
     
   def getDateByIndexValue(self,stockCode,stockIndex,stockValue):
     if stockValue:  
         sq="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE `"+str(stockIndex)+"`="+str(stockValue)+""
+#         try:
+    try:
         self.__cursor.execute(sq)
         result=self.__cursor.fetchone()
-        if result:
-            if result[0]:
-                return int(result[0])
-            else:
-                return 0
-        else:
-            return 0
+    #     print(stockCode+stockIndex+' min:'+str(result[0]))    
+        return int(result[0])
+    except:
+        return 0
 
   def getDateDiff(self,firstDate,secondDate):
-    sq="SELECT MIN(ID) FROM listdate"+" WHERE trade_date>="+str(firstDate)
-    self.__cursor.execute(sq)
-    firstdateId=self.__cursor.fetchone()
+    sq="SELECT MIN(id) FROM tabledate"+" WHERE trade_date>="+str(firstDate)
+    try:
+        self.__cursor.execute(sq)
+        firstdateId=self.__cursor.fetchone()[0]
+    except:
+        return -1
     
-    sq="SELECT MAX(ID) FROM listdate"+" WHERE trade_date<="+str(secondDate)
-    self.__cursor.execute(sq)
-    seconddateId=self.__cursor.fetchone()    
+    sq="SELECT MAX(ID) FROM tabledate"+" WHERE trade_date<="+str(secondDate)
+    try:
+        self.__cursor.execute(sq)
+        seconddateId=self.__cursor.fetchone()[0]
+    except:
+        return -1    
     
-    dateDiff=seconddateId[0]-firstdateId[0]
+    dateDiff=seconddateId-firstdateId
 #     print(str(dateDiff))
     return dateDiff
   
   def getAdjustedRatioByClose(self,stockCode,startDate,endDate):
-        sq="SELECT `percent` FROM `"+stockCode+"` WHERE trade_date<="+endDate \
-          +" AND trade_date>"+startDate+" ORDER BY `percent` DESC"
-        self.__cursor.execute(sq)
-        listPerc=self.__cursor.fetchall()
-        ratio=1
-        if listPerc!=None:
-            for i in range(0,len(listPerc)):
-#                 print(str(ratio)+"|"+str(listPerc[i][0]))
-                ratio=ratio*(100-listPerc[i][0])/100
-                       
-        return ratio   
+        sq="SELECT `percent` FROM `"+str(stockCode)+"` WHERE trade_date<="+str(endDate) \
+          +" AND trade_date>"+str(startDate)+" ORDER BY `percent` DESC"
+        try:
+            self.__cursor.execute(sq)
+            result=self.__cursor.fetchall()
+            listPerc=[result[i][0] for i in range(len(result))]
+            ratio=1
+            if listPerc:
+                for j in listPerc:
+    #                 print(str(ratio)+"|"+str(listPerc[i][0]))
+                    ratio=ratio*(100-listPerc)/100
+                           
+            return ratio
+        except:
+            return 0 
                 
       
