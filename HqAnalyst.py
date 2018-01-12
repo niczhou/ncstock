@@ -1,4 +1,5 @@
 #coding=utf-8
+import threadpool
 import pymysql
 from HqUtil import HqUtil
 
@@ -12,16 +13,26 @@ class HqAnalyst:
     self.__cursor=connection.cursor()
     
   def __del__(self):
-#     print("__del__")
     pass
-
-  def getIsBuy(self,stockCode,inputDate,analDays):
+#     print("__del__")
+  def getIsBuyByHs(self,tableHs,inputDate,analDays):
+    sq="SELECT stock_code FROM tablesz LIMIT 200"
+    try:
+        self.__cursor.execute(sq)
+        result=cursor.fetchall()
+        listSz=[result[i][0] for i in range(len(result))]
+        listParas=[[listSz[i],inputDate,analDays] for i in range(len(listSz))]
+        print(listParas)
+    except:
+        print("analyze fail")
+      
+  def getIsBuyByCode(self,stockCode,inputDate,analDays):
     mUtil=HqUtil()
     startDate=mUtil.getStartDate(inputDate,analDays,self.__conn)
     if self.getIsBuyByClose(stockCode,startDate,inputDate)==False:
       return False
-#     elif self.getIsBuyByAmount(stockCode,startDate,inputDate)==False:
-#       return False
+    elif self.getIsBuyByAmount(stockCode,startDate,inputDate)==False:
+      return False
     else:
       return True
 #####close#######################close###########################close######################
@@ -31,9 +42,9 @@ class HqAnalyst:
     maxIndex=minIndex=avgIndex=0.00
     maxDate=minDate=0   
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
-    maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
+    maxDate=self.getDateByIndexValue(stockCode,index,maxIndex,startDate,endDate)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
-    minDate=self.getDateByIndexValue(stockCode,index,minIndex)
+    minDate=self.getDateByIndexValue(stockCode,index,minIndex,startDate,endDate)
     avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
     
     minMax=minAvg=aRatio=0.0
@@ -68,9 +79,9 @@ class HqAnalyst:
     maxIndex=minIndex=avgIndex=0.00
     maxDate=minDate=0
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
-    maxDate=self.getDateByIndexValue(stockCode,index,maxIndex)
+    maxDate=self.getDateByIndexValue(stockCode,index,maxIndex,startDate,endDate)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
-    minDate=self.getDateByIndexValue(stockCode,index,minIndex)
+    minDate=self.getDateByIndexValue(stockCode,index,minIndex,startDate,endDate)
     avgIndex=self.getAvgByIndex(stockCode,index,startDate,endDate)
 
     minMax=minAvg=aRatio=0.0
@@ -98,8 +109,9 @@ class HqAnalyst:
     return isBuy     
 ######################amount################################amount###########################	
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
-    sq="SELECT MAX(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>="\
-                +str(startDate)+" AND trade_date<="+str(endDate)
+    sq="SELECT MAX(`%s`) FROM `%s` WHERE trade_date>=%d AND trade_date<=%d"\
+        %(stockIndex,stockCode,startDate,endDate)
+#     print(sq)
     try:
         self.__cursor.execute(sq)
         result=self.__cursor.fetchone()
@@ -115,8 +127,8 @@ class HqAnalyst:
         return 0
     
   def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
-    sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>="\
-                +str(startDate)+" AND trade_date<="+str(endDate)
+    sq="SELECT MIN(`%s`) FROM `%s` WHERE trade_date>=%d AND trade_date<=%d"\
+        %(stockIndex,stockCode,startDate,endDate)
     try:
         self.__cursor.execute(sq)
         result=self.__cursor.fetchone()
@@ -132,8 +144,8 @@ class HqAnalyst:
         return 0
 
   def getAvgByIndex(self,stockCode,stockIndex,startDate,endDate):
-    sq="SELECT AVG(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"\
-                +str(startDate)+" AND trade_date<"+str(endDate)
+    sq="SELECT AVG(`%s`) FROM `%s` WHERE trade_date>=%d AND trade_date<=%d"\
+        %(stockIndex,stockCode,startDate,endDate)
     try:
         self.__cursor.execute(sq)
         result=self.__cursor.fetchone()
@@ -148,10 +160,10 @@ class HqAnalyst:
     except:
         return 0
     
-  def getDateByIndexValue(self,stockCode,stockIndex,stockValue):
+  def getDateByIndexValue(self,stockCode,stockIndex,stockValue,startDate,endDate):
     if stockValue:  
-        sq="SELECT trade_date"+" FROM `"+str(stockCode)+"` WHERE `"+str(stockIndex)+"`="+str(stockValue)+""
-#         try:
+        sq="SELECT trade_date FROM `%s` WHERE `%s`=%r AND trade_date>=%d AND trade_date<=%d"\
+            %(stockCode,stockIndex,str(stockValue),startDate,endDate)
     try:
         self.__cursor.execute(sq)
         result=self.__cursor.fetchone()
@@ -166,18 +178,20 @@ class HqAnalyst:
         self.__cursor.execute(sq)
         firstdateId=self.__cursor.fetchone()[0]
     except:
-        return -1
+        return 0
     
     sq="SELECT MAX(ID) FROM tabledate"+" WHERE trade_date<="+str(secondDate)
     try:
         self.__cursor.execute(sq)
         seconddateId=self.__cursor.fetchone()[0]
     except:
-        return -1    
-    
-    dateDiff=seconddateId-firstdateId
+        return 0    
+    if firstdateId and seconddateId:
+        dateDiff=seconddateId-firstdateId
 #     print(str(dateDiff))
-    return dateDiff
+        return dateDiff
+    else:
+        return 0
   
   def getAdjustedRatioByClose(self,stockCode,startDate,endDate):
         sq="SELECT `percent` FROM `"+str(stockCode)+"` WHERE trade_date<="+str(endDate) \
