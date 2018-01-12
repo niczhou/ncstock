@@ -40,9 +40,10 @@ result=cursor.fetchall()
 listSz=[result[i][0] for i in range(len(result))]
 # 
 for codeSz in listSz:
+    pass
 #     mAnalyst.getIsBuyByClose(codeSz,20171208,20180110)
 #     mAnalyst.getIsBuyByAmount(codeSz,20171208,20180110)
-    mAnalyst.getIsBuyByCode(codeSz,20171208,20180110)
+#     mAnalyst.getIsBuyByCode(codeSz,20171208,20180110)
 
 # def analSh(stockCode):
 # #     print(str(stockCode))
