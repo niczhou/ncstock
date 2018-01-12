@@ -15,23 +15,28 @@ class HqAnalyst:
   def __del__(self):
     pass
 #     print("__del__")
+###########################################################################################
   def getIsBuyByHs(self,tableHs,inputDate,analDays):
+    mUtil=HqUtil()
     sq="SELECT stock_code FROM tablesz LIMIT 200"
     try:
         self.__cursor.execute(sq)
-        result=cursor.fetchall()
+        result=self.__cursor.fetchall()  
         listSz=[result[i][0] for i in range(len(result))]
-        listParas=[[listSz[i],inputDate,analDays] for i in range(len(listSz))]
-        print(listParas)
+        startDate=mUtil.getStartDate(inputDate,analDays,self.__conn)
+        listParas=[([codeSz,startDate,inputDate],None) for codeSz in listSz]
+    #     print(listParas)  
+        pool=threadpool.ThreadPool(2)
+        requests=threadpool.makeRequests(self.getIsBuyByCode,listParas)
+        [pool.putRequest(req) for req in requests]
+        pool.wait()
     except:
-        print("analyze fail")
+        print("analyze fail %s"%stockCode)
       
-  def getIsBuyByCode(self,stockCode,inputDate,analDays):
-    mUtil=HqUtil()
-    startDate=mUtil.getStartDate(inputDate,analDays,self.__conn)
-    if self.getIsBuyByClose(stockCode,startDate,inputDate)==False:
+  def getIsBuyByCode(self,stockCode,startDate,endDate):
+    if self.getIsBuyByClose(stockCode,startDate,endDate)==False:
       return False
-    elif self.getIsBuyByAmount(stockCode,startDate,inputDate)==False:
+    elif self.getIsBuyByAmount(stockCode,startDate,endDate)==False:
       return False
     else:
       return True
@@ -60,15 +65,15 @@ class HqAnalyst:
                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
                     if aRatio<0.81:
                         minEndDiff=self.getDateDiff(minDate,endDate)
-                        if minEndDiff<4:
+                        if minEndDiff<5:
                             maxMinDiff=self.getDateDiff(maxDate,minDate)
-                            if maxMinDiff>7:
+                            if maxMinDiff>6:
                                 isBuy=True
-#     if isBuy==True:
-    print(str(stockCode)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
-      +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-      +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-      +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+    if isBuy==True:
+        print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
+          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
              
     return isBuy     
 
@@ -88,23 +93,23 @@ class HqAnalyst:
     minEndDiff=maxMinDiff=0
     if maxIndex:
         minMax=minIndex/maxIndex
-        if minMax<0.21:
-            if avgIndex!=0:
+        if minMax<0.23:
+            if avgIndex:
                 minAvg=minIndex/avgIndex
-                if minAvg<0.33:
+                if minAvg<0.37:
         #     double check with forward answer authority
 #                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
 #                     if aRatio<0.78:
                     minEndDiff=self.getDateDiff(minDate,endDate)
-                    if minEndDiff<4:
+                    if minEndDiff<5:
                         maxMinDiff=self.getDateDiff(maxDate,minDate)
-                        if maxMinDiff>16:
+                        if maxMinDiff>10:
                             isBuy=True
-#     if isBuy==True:
-    print(str(stockCode)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
-      +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-      +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-      +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+    if isBuy==True:
+        print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
     
     return isBuy     
 ######################amount################################amount###########################	

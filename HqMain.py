@@ -19,7 +19,6 @@ mHqUpdater=HqUpdater(conn)
 mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
 
-mAnalyst.getIsBuyByHs("tablesz",20180110,17)    
 # mHsUpdater.createTableHs("tablesh")
 # mHsUpdater.createTableHs("tablesz")   
 # mHsUpdater.updateTableHs("tablesh","res/20180107listsh.xlsx")
@@ -31,19 +30,19 @@ mAnalyst.getIsBuyByHs("tablesz",20180110,17)
 # mHqUpdater.updateHqByHs("tablesh")
 # mHsUpdater.updateTableDate()
 
- 
+# mAnalyst.getIsBuyByCode("000620",20171218,20180110) 
+# print("######")    
+# mAnalyst.getIsBuyByHs("tablesz",20180110,17)
+sq="SELECT stock_code FROM tablesz"
+#     try:
+cursor.execute(sq)
+result=cursor.fetchall()  
+listSz=[result[i][0] for i in range(len(result))]
 # 
-# for i in listSz:
-#     updateHq(i)
-# pool=threadpool.ThreadPool(8)
-# requests=threadpool.makeRequests(updateHq,listSz)
-# [pool.putRequest(req) for req in requests]
-# pool.wait()
-#     
-
-
-
-
+for codeSz in listSz:
+#     mAnalyst.getIsBuyByClose(codeSz,20171208,20180110)
+#     mAnalyst.getIsBuyByAmount(codeSz,20171208,20180110)
+    mAnalyst.getIsBuyByCode(codeSz,20171208,20180110)
 
 # def analSh(stockCode):
 # #     print(str(stockCode))
