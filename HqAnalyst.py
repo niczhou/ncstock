@@ -40,6 +40,12 @@ class HqAnalyst:
       return False
     else:
       return True
+ #############################################################################################
+  def getIsBuyByDate(self,stockCode,sDate):
+#       
+    
+    pass
+    
 #####close#######################close###########################close######################
   def getIsBuyByClose(self,stockCode,startDate,endDate):
     index="close"
@@ -69,11 +75,11 @@ class HqAnalyst:
                             maxMinDiff=self.getDateDiff(maxDate,minDate)
                             if maxMinDiff>6:
                                 isBuy=True
-    if isBuy==True:
-        print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
-          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+#     if isBuy==True:
+    print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
+      +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+      +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+      +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
              
     return isBuy     
 
@@ -105,35 +111,35 @@ class HqAnalyst:
                         maxMinDiff=self.getDateDiff(maxDate,minDate)
                         if maxMinDiff>10:
                             isBuy=True
-    if isBuy==True:
-        print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
-          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+#     if isBuy==True:
+    print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+      +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+      +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+      +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
     
     return isBuy     
 ######################amount################################amount###########################	
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
-    sq="SELECT MAX(`%s`) FROM `%s` WHERE trade_date>=%d AND trade_date<=%d"\
-        %(stockIndex,stockCode,startDate,endDate)
+    sq="SELECT `%s` FROM (SELECT trade_date,`%s` FROM `%s` WHERE trade_date>=%d AND trade_date<=%d ORDER BY `%s` DESC LIMIT 1) AS mt"\
+        %(stockIndex,stockIndex,stockCode,startDate,endDate,stockIndex)
 #     print(sq)
-    try:
-        self.__cursor.execute(sq)
-        result=self.__cursor.fetchone()
-        if result:
-            if result[0]:
+#     try:
+    self.__cursor.execute(sq)
+    result=self.__cursor.fetchone()
+    if result:
+        if result[0]:
 #                 print(stockCode+stockIndex+' max:'+str(result[0])) 
-                return result[0]
-            else:
-                return 0
+            return result[0]
         else:
             return 0
-    except:
+    else:
         return 0
+#     except:
+#         return 0
     
   def getMinByIndex(self,stockCode,stockIndex,startDate,endDate):
-    sq="SELECT MIN(`%s`) FROM `%s` WHERE trade_date>=%d AND trade_date<=%d"\
-        %(stockIndex,stockCode,startDate,endDate)
+    sq="SELECT `%s` FROM (SELECT trade_date,`%s` FROM `%s` WHERE trade_date>=%d AND trade_date<=%d ORDER BY `%s` LIMIT 1) AS mt"\
+        %(stockIndex,stockIndex,stockCode,startDate,endDate,stockIndex)
     try:
         self.__cursor.execute(sq)
         result=self.__cursor.fetchone()

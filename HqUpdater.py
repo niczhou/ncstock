@@ -26,7 +26,7 @@ class HqUpdater:
         result=self.__cursor.fetchall()
         listHs=[result[i][0] for i in range(len(result))]
         for codeHs in listHs:
-            self.updateHqByCode(codeHs,"20170601","20180110")
+            self.updateHqByCode(codeHs,"20180109","20180113")
 #         except:
 #             print("update fail")
             

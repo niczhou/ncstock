@@ -30,17 +30,19 @@ mUtil = HqUtil()
 # mHqUpdater.updateHqByHs("tablesh")
 # mHsUpdater.updateTableDate()
 
-# mAnalyst.getIsBuyByCode("000620",20171218,20180110) 
-# print("######")    
+mMax=mAnalyst.getMaxByIndex("000001","close",20171218,20180110) 
+mMin=mAnalyst.getMinByIndex("000001","close",20171218,20180110) 
+print(str(mMin))
+print("######")    
 # mAnalyst.getIsBuyByHs("tablesz",20180110,17)
-sq="SELECT stock_code FROM tablesz"
-#     try:
-cursor.execute(sq)
-result=cursor.fetchall()  
-listSz=[result[i][0] for i in range(len(result))]
-# 
-for codeSz in listSz:
-    pass
+# sq="SELECT stock_code FROM tablesz"
+# #     try:
+# cursor.execute(sq)
+# result=cursor.fetchall()  
+# listSz=[result[i][0] for i in range(len(result))]
+# # 
+# for codeSz in listSz:
+# #     pass
 #     mAnalyst.getIsBuyByClose(codeSz,20171208,20180110)
 #     mAnalyst.getIsBuyByAmount(codeSz,20171208,20180110)
 #     mAnalyst.getIsBuyByCode(codeSz,20171208,20180110)
