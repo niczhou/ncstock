@@ -19,6 +19,7 @@ mHqUpdater=HqUpdater(conn)
 mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
 
+mAnalyst.getIsBuyByDate("000001",20180102,20180113)
 # mHsUpdater.createTableHs("tablesh")
 # mHsUpdater.createTableHs("tablesz")   
 # mHsUpdater.updateTableHs("tablesh","res/20180107listsh.xlsx")
@@ -30,11 +31,7 @@ mUtil = HqUtil()
 # mHqUpdater.updateHqByHs("tablesh")
 # mHsUpdater.updateTableDate()
 
-mMax=mAnalyst.getMaxByIndex("000001","close",20171218,20180110) 
-mMin=mAnalyst.getMinByIndex("000001","close",20171218,20180110) 
-print(str(mMin))
-print("######")    
-# mAnalyst.getIsBuyByHs("tablesz",20180110,17)
+#  mAnalyst.getIsBuyByHs("tablesz",20180110,17)
 # sq="SELECT stock_code FROM tablesz"
 # #     try:
 # cursor.execute(sq)
@@ -57,30 +54,10 @@ print("######")
 # [pool.putRequest(req) for req in requests]
 # pool.wait()
 
-
-# stockIndex='amount'
-# stockCode='600000'
-# startDate='20171111'
-# endDate='20180103'
 # __sq="SELECT MIN(`"+str(stockIndex)+"`) FROM `"+str(stockCode)+"` WHERE trade_date>"+str(startDate)+" AND trade_date<"+str(endDate)
 # cursor.execute(__sq)
 # res=cursor.fetchone()
-# print(str(type(res[0])))
-      
-# print(str(mAnalyst.getAdjustedRatioByClose("000002","20170720","20170818")))
-# print(mAnalyst.getMinByIndex("000001","close","20170808","20170922"))
-# print(mAnalyst.getMinByIndex("000001","amount","20170808","20170922"))
-#  
-# print(mAnalyst.getDateByIndexValue("000001","close","10.02"))
-# print(mAnalyst.getDateByIndexValue("000001","amount","41765.31"))
-#  
-# print(mAnalyst.getMaxByIndex("000001","close","20170808","20170922"))
-# print(mAnalyst.getMaxByIndex("000001","amount","20170808","20170922"))
-# print(mAnalyst.getAvgByIndex("000001","close","20170808","20170922"))
-# print(mAnalyst.getAvgByIndex("000001","amount","20170808","20170922"))
-#  
-# print(mAnalyst.getDateDiff("20170922","20170808"))
-#  
+# print(str(type(res[0])))  
 # print(str(mAnalyst.getIsBuyByClose("000001","20170808","20170922")))
 # print(str(mAnalyst.getIsBuyByAmount("000001","20170808","20170922")))
 # print(str(mAnalyst.getIsBuy("000016","20170922",33)))
@@ -105,26 +82,6 @@ print("######")
 # 
 # mWorm.downloadf(bUrl)
 # mWorm.readUrl('http://www.fjbs.gov.cn/eWebEditor/uploadfile/20171103100531556.xlsx')
-
-# sql="SELECT stock_code FROM listsh"
-# cursor.execute(sql)
-# stockArr=cursor.fetchall()
-# print(len(stockArr))
-
-# for i in range(0,len(stockArr)):
-#   try:
-#     isBuy=mAnalyst.getIsBuyByCode(str(stockArr[i][0]),"20170922",17)
-#     print(str(stockArr[i][0])+":"+isBuy)
-#   except:
-#     continue
-# 
-# mUtil=HqUtil()
-# print(mUtil.getStartDate("20171127",7,conn))
-# 
-# mHs=HsUpdater(conn)
-# mHs.createList("sh")
-# mHs.updateListsz('C:/demo/nzstock/input/20171203深圳A股列表.xlsx')
-# mHs.updateListsh('C:/demo/nzstock/input/20171203上海A股列表.xlsx')
 
 # a=time.time()
 # print(a)
