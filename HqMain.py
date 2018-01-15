@@ -19,7 +19,7 @@ mHqUpdater=HqUpdater(conn)
 mAnalyst=HqAnalyst(conn)
 mUtil = HqUtil()
 
-mAnalyst.getIsBuyByDate("000001",20180102,20180113)
+mAnalyst.getIsBuyByCode("000010")
 # mHsUpdater.createTableHs("tablesh")
 # mHsUpdater.createTableHs("tablesz")   
 # mHsUpdater.updateTableHs("tablesh","res/20180107listsh.xlsx")
