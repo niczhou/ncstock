@@ -39,7 +39,7 @@ class HqAnalyst:
     result=self.__cursor.fetchall()
     listDate=[res[0] for res in result]
     for dt in listDate[::-1]:
-        self.getIsBuyByDate(stockCode,dt,15)
+        self.getIsBuyByDate(stockCode,dt,11)
         
  #############################################################################################
   def getIsBuyByDate(self,stockCode,endDate,days):
@@ -50,7 +50,7 @@ class HqAnalyst:
         if self.getIsBuyByAmount(stockCode, startDate, endDate)==True:
             isBuy=True 
     if isBuy==True:
-        print(str(stockCode)+" buy:"+str(endDate) )           
+        print(str(stockCode)+" buy at "+str(endDate) )           
     return isBuy       
     
 #####close#######################close###########################close######################
@@ -70,23 +70,23 @@ class HqAnalyst:
 #     print(self.getMaxByIndex(stockCode,index,startDate,endDate))
     if maxIndex:
         minMax=minIndex/maxIndex
-        if minMax<0.86:
+        if minMax<0.92:
             if avgIndex:
                 minAvg=minIndex/avgIndex
                 if minAvg<0.95:
         #     double check with forward answer authority
                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
-                    if aRatio<0.86:
+                    if aRatio<0.92:
                         minEndDiff=self.getDateDiff(stockCode,minDate,endDate)
-                        if minEndDiff<5:
+                        if minEndDiff<4:
                             maxMinDiff=self.getDateDiff(stockCode,maxDate,minDate)
                             if maxMinDiff>6:
                                 isBuy=True
-#     if isBuy==True:
-    print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
-      +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-      +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-      +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+    if isBuy==True:
+        print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
+          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
              
     return isBuy     
 
@@ -106,10 +106,10 @@ class HqAnalyst:
     minEndDiff=maxMinDiff=0
     if maxIndex:
         minMax=minIndex/maxIndex
-        if minMax<0.23:
+        if minMax<0.38:
             if avgIndex:
                 minAvg=minIndex/avgIndex
-                if minAvg<0.37:
+                if minAvg<0.42:
         #     double check with forward answer authority
 #                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
 #                     if aRatio<0.78:
@@ -118,11 +118,11 @@ class HqAnalyst:
                         maxMinDiff=self.getDateDiff(stockCode,maxDate,minDate)
                         if maxMinDiff>10:
                             isBuy=True
-#     if isBuy==True:
-    print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
-      +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-      +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-      +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+    if isBuy==True:
+        print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+          +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+          +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+          +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
     
     return isBuy     
 ######################amount################################amount###########################	
