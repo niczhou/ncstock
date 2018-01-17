@@ -44,7 +44,7 @@ class HsUpdater:
         print(sq)
         self.__cursor.execute(sq)    
              
-    def updateTablesHs(self,tableHs):
+    def updateTableCodesByHs(self,tableHs):
         if tableHs=="tablesh" or tableHs=="tablesz":
             sq="SELECT stock_code FROM " +tableHs     
             self.__cursor.execute(sq)

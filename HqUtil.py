@@ -1,5 +1,6 @@
 #coding=utf-8
 import pymysql
+import time
 
 class HqUtil:  
       
@@ -17,6 +18,18 @@ class HqUtil:
              
         return mIndex
     
+    def getEndDate(self,inputDate,connection):
+        if isinstance(connection, pymysql.connections.Connection):
+            cursor=connection.cursor()
+            sq="SELECT MAX(trade_date) FROM tabledate WHERE trade_date<=" \
+                 +str(inputDate)
+            #    print(sq)
+            try:
+                cursor.execute(sq)
+                result=cursor.fetchone()
+                return result[0]
+            except:
+                return 0
     def getStartDate(self,inputDate,days,connection):
         if isinstance(connection, pymysql.connections.Connection):
             cursor=connection.cursor()
@@ -28,7 +41,6 @@ class HqUtil:
                 result=cursor.fetchone()
                 return result[0]
             except:
-                return 0
-        
+                return 0        
 
     
