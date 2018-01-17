@@ -19,16 +19,16 @@ class HqUpdater:
         self.__conn=connection
         self.__cursor=connection.cursor()    
 
-    def updateHqByHs(self,tableHs):
+    def updateHqByHs(self,tableHs,startDate,endDate):
         sq="SELECT stock_code FROM "+tableHs
-#         try:
-        self.__cursor.execute(sq)
-        result=self.__cursor.fetchall()
-        listHs=[result[i][0] for i in range(len(result))]
-        for codeHs in listHs:
-            self.updateHqByCode(codeHs,"20180109","20180113")
-#         except:
-#             print("update fail")
+        try:
+            self.__cursor.execute(sq)
+            result=self.__cursor.fetchall()
+            listHs=[result[i][0] for i in range(len(result))]
+            for codeHs in listHs:
+                self.updateHqByCode(codeHs,startDate,endDate)
+        except:
+            print("update fail")
             
     def updateHqByCode(self,stockCode,startDate,endDate):
         hq=self.getHq(stockCode, startDate, endDate)
