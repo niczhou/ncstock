@@ -4,7 +4,7 @@ import pymysql
 import time
 from HqUtil import HqUtil
 
-class HqShortAnalyst:
+class HqAnalyst:
   __conn=None
   __cursor=None
 
@@ -17,50 +17,81 @@ class HqShortAnalyst:
     pass
 #     print("__del__")
 ###########################################################################################
-  def ifBuyByHs(self,tableHs,endDate):
-    days=11
-    mUtil=HqUtil()
+  def ifBuyTodayByHs(self,tableHs,endDate,HqStrategy=0):
+    if HqStrategy!=0 and HqStrategy!=1:
+        print("invlida HqStrategy:")
+        return 
+    
     sq="SELECT stock_code FROM %s"%tableHs
 #     try:
     self.__cursor.execute(sq)
     result=self.__cursor.fetchall()  
     listHs=[result[i][0] for i in range(len(result))]
-#         listParas=[([codeHs,endDate,days],None) for codeHs in listHs]
-#         pool=threadpool.ThreadPool(4)
-#         requests=threadpool.makeRequests(self.ifBuyByDate,listParas)
-#         [pool.putRequest(req) for req in requests]
-#         pool.wait()
+    
+#     listParas=[([codeHs,endDate,HqStrategy],None) for codeHs in listHs]
+#     pool=threadpool.ThreadPool(4)
+#     requests=threadpool.makeRequests(self.ifBuyByDate,listParas)
+#     [pool.putRequest(req) for req in requests]
+#     pool.wait()
     for codeHs in listHs:
-        self.ifBuyByDate(codeHs, endDate, days)
+        self.ifBuyByDate(codeHs, endDate,HqStrategy)
 #     except:
-#         print("analyze fail %s"%codeHs)
-      
-  def ifBuyByCode(self,stockCode):
+#         print("analyze fail")
+####################################################################################
+  def ifBuyAlltimeByHs(self,tableHs,HqStrategy=0):
+    if HqStrategy!=0 and HqStrategy!=1:
+        print("HqStrategy allows only 0 or 1")
+        return 
+    
+    sq="SELECT stock_code FROM %s"%tableHs
+    self.__cursor.execute(sq)
+    result=self.__cursor.fetchall()  
+    listHs=[result[i][0] for i in range(len(result))]
+    for codeHs in listHs:
+        self.ifBuyByCode(codeHs,HqStrategy)
+####################################################################################      
+  def ifBuyByCode(self,stockCode,HqStrategy=0):     
     sq="SELECT trade_date FROM `%s`"%stockCode
     self.__cursor.execute(sq)
     result=self.__cursor.fetchall()
     listDate=[res[0] for res in result]
     for dt in listDate[::-1]:
-        self.ifBuyByDate(stockCode,dt,11)
+        self.ifBuyByDate(stockCode,dt,HqStrategy)
         
  #############################################################################################
-  def ifBuyByDate(self,stockCode,endDate,days):
+  def ifBuyByDate(self,stockCode,endDate,HqStrategy=0):
+    if HqStrategy==0:
+        days=11
+    elif HqStrategy==1:
+        days=29
     mUtil=HqUtil()
     isBuy=False
+#     endDate=mUtil.getEndDate(endDate,self.__conn)
     startDate=mUtil.getStartDate(endDate,days,self.__conn)
-    if self.ifBuyByClose(stockCode, startDate, endDate)==True:
-        if self.ifBuyByAmount(stockCode, startDate, endDate)==True:
+    if self.ifBuyByClose(stockCode, startDate, endDate,HqStrategy)==True:
+        if self.ifBuyByAmount(stockCode, startDate, endDate,HqStrategy)==True:
             isBuy=True 
     if isBuy==True:
         print(str(stockCode)+" buy at "+str(endDate) )           
     return isBuy       
     
 #####close#######################close###########################close######################
-  def ifBuyByClose(self,stockCode,startDate,endDate):
+  def ifBuyByClose(self,stockCode,startDate,endDate,HqStrategy=0):
+    if HqStrategy==0:
+        valMinMax=0.88
+        valMinAvg=0.92
+        valDateDiffMinEnd=4
+        valDateDiffMaxMin=6
+    elif HqStrategy==1:
+        valMinMax=0.78
+        valMinAvg=0.88
+        valDateDiffMinEnd=4
+        valDateDiffMaxMin=16
+        
     index="close"
     isBuy=False
     maxIndex=minIndex=avgIndex=0.00
-    dateMaxClose=minDate=0   
+    dateMaxIndex=minDate=0   
     maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
     maxDate=self.getDateMaxByIndex(stockCode,index,startDate,endDate)
     minIndex=self.getMinByIndex(stockCode,index,startDate,endDate)
@@ -72,17 +103,17 @@ class HqShortAnalyst:
 #     print(self.getMaxByIndex(stockCode,index,startDate,endDate))
     if maxIndex:
         minMax=minIndex/maxIndex
-        if minMax<0.88:
+        if minMax<valMinMax:
             if avgIndex:
                 minAvg=minIndex/avgIndex
-                if minAvg<0.92:
+                if minAvg<valMinAvg:
         #     double check with forward answer authority
                     aRatio=self.getAdjustedRatio(stockCode, startDate, endDate)
-                    if aRatio<0.88:
+                    if aRatio<valMinMax:
                         minEndDiff=self.dateDiff(stockCode,minDate,endDate)
-                        if minEndDiff<4:
+                        if minEndDiff<valDateDiffMinEnd:
                             maxMinDiff=self.dateDiff(stockCode,maxDate,minDate)
-                            if maxMinDiff>6:
+                            if maxMinDiff>valDateDiffMaxMin:
                                 isBuy=True
     if isBuy==True:
         print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
@@ -93,7 +124,18 @@ class HqShortAnalyst:
     return isBuy     
 
 #####amount---------------------------amount--------------------------amount------------------------------
-  def ifBuyByAmount(self,stockCode,startDate,endDate):
+  def ifBuyByAmount(self,stockCode,startDate,endDate,HqStrategy=0):
+    if HqStrategy==0:
+        valMinMax=0.39
+        valMinAvg=0.51
+        valDateDiffMinEnd=4
+        valDateDiffMaxMin=6
+    elif HqStrategy==1:
+        valMinMax=0.37
+        valMinAvg=0.57
+        valDateDiffMinEnd=6
+        valDateDiffMaxMin=16
+    
     index="amount"
     isBuy=False
     maxIndex=minIndex=avgIndex=0.00
@@ -108,17 +150,17 @@ class HqShortAnalyst:
     minEndDiff=maxMinDiff=0
     if maxIndex:
         minMax=minIndex/maxIndex
-        if minMax<0.38:
+        if minMax<valMinMax:
             if avgIndex:
                 minAvg=minIndex/avgIndex
-                if minAvg<0.42:
+                if minAvg<valMinAvg:
         #     double check with forward answer authority
 #                     aRatio=self.getAdjustedRatioByClose(stockCode, startDate, endDate)
 #                     if aRatio<0.78:
                     minEndDiff=self.dateDiff(stockCode,minDate,endDate)
-                    if minEndDiff<5:
+                    if minEndDiff<valDateDiffMinEnd:
                         maxMinDiff=self.dateDiff(stockCode,maxDate,minDate)
-                        if maxMinDiff>10:
+                        if maxMinDiff>valDateDiffMaxMin:
                             isBuy=True
     if isBuy==True:
         print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
