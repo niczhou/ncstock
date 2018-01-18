@@ -19,7 +19,10 @@ dUpdater=DBUpdater(conn)
 mUtil = HqUtil()
 mTool=XlTool()
 
-dUpdater.createTableOut("tableoutsz")
+# dUpdater.createTableOut("tableoutsh")
+# dUpdater.updateTableOut("sh")
+
+
 # mTool.createXl('pyt5','backup/test')
 # mAnalyst.ifBuyByCode("300498")
 # mHsUpdater.createTableHs("tablesh")
