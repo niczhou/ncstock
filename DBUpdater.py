@@ -5,7 +5,7 @@ import pymysql
 from HqUtil import HqUtil
 
 
-class HsUpdater:
+class DBUpdater:
     __conn=None
     __cursor=None
     
