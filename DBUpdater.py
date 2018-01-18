@@ -12,7 +12,7 @@ class DBUpdater:
     def __init__(self,connection):
         self.__conn=connection
         self.__cursor=connection.cursor()
-
+############################################################################################
     def createTableHs(self,hsTableName):
         sq="CREATE TABLE IF NOT EXISTS "+hsTableName+"(id INT NOT NULL AUTO_INCREMENT,"\
         +"stock_code VARCHAR(10),stock_name VARCHAR(12),stock_ipo INT,"\
@@ -87,4 +87,20 @@ class DBUpdater:
             except:
                 pass
 #                 print("update fail %d"+uDate)          
+##########################################################################################
+    def createTableOut(self,tableName): 
+        sq="CREATE TABLE IF NOT EXISTS "+str(tableName)+"(id INT NOT NULL AUTO_INCREMENT,stock_code VARCHAR(10),"\
+            +"stock_name VARCHAR(12),PRIMARY KEY(id))"
+        print(sq)
+        self.__cursor.execute(sq)
+
+    def updateTableOut(self,tableName):
+        sq="SELECT trade_date FROM tabledate"
+        try:
+            self.__cursor.execute(sq)
+            result=self.__cursor.fetchall()
+            listDate=[res[0] for res in result]
+            for iDate in listDate:
+                sq="INSE"
+
         
