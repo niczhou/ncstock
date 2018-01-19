@@ -48,8 +48,8 @@ def ifBuyAlltime(HqStrategy=0):
     mAnalyst.ifBuyAlltimeByHs("tablesz",HqStrategy)
     mAnalyst.ifBuyAlltimeByHs("tablesh",HqStrategy)
    
-# updaterHq()    
+updaterHq()    
 # ifBuyToday(0)
-ifBuyAlltime(1)
+# ifBuyAlltime(1)
 
 conn.close()

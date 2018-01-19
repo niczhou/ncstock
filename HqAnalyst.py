@@ -144,7 +144,7 @@ class HqAnalyst:
     return isBuy     
 
 #####amount---------------------------amount--------------------------amount------------------------------
-  def ifBuyByAmount(self,stockCode,startDate,endDate,HqStrategy=0):
+  def ifAmountBottom(self,stockCode,startDate,endDate,HqStrategy=0):
     if HqStrategy==0:
         valMinMax=0.39
         valMinAvg=0.51
@@ -191,11 +191,34 @@ class HqAnalyst:
 #           +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
     
     return isBuy 
-  def ifBottomOut(self,endDate):
-#     if bottomOut in last 3 days   
-      mUtil=HqUtil()
-      startDate=mUtil.getStartDate(endDate,3,self.__conn)
-      
+  def ifLowerShadow(self,stockCode,endDate,isLongShadow=False):
+    if isLongShadow==False:
+        valLowOpen=0.983
+        valLowClose=0.986
+        valCloseOpen=0.979
+    elif isLongShadow==True:
+        valLowOpen=0.963
+        valLowClose=0.967
+        valCloseOpen=0.981
+    else:
+        print('invalid value,allowed only:True,False')    
+    isLowerShadow=False
+    sq="SELECT `open`,`close`,`low` FROM `%s` WHERE trade_date<=%d ORDER BY trade_date DESC LIMIT 1"%(stockCode,endDate)
+    try:
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchone()
+        sOpen=result[0]
+        sClose=result[1]
+        sLow=result[2]
+        if sLow/sOpen<valLowOpen:
+            if sLow/sClose<valLowClose:
+                if sClose/sOpen>valCloseOpen:
+                    isLowerShadow=True
+                    print("%s:lowerShadow-open:%r,close:%r,low:%r"%(stockCode,str(sOpen),str(sClose),str(sLow)))
+#         print(isLowerShadow)
+        return isLowerShadow  
+    except:
+        return False
 ######################amount################################amount###########################	
   def getMaxByIndex(self,stockCode,stockIndex,startDate,endDate):
     sq="SELECT `%s` FROM (SELECT trade_date,`%s` FROM `%s` WHERE trade_date>=%d AND trade_date<=%d ORDER BY `%s` DESC LIMIT 1) AS mt"\

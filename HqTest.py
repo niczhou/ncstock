@@ -18,8 +18,14 @@ mAnalyst=HqAnalyst(conn)
 dUpdater=DBUpdater(conn)
 mUtil = HqUtil()
 xTool=XlTool()
-
-xTool.tableToXl(conn,"tableoutsz","2018018")
+# 
+# xTool.tableToXl(conn,"tableoutsz","2018018")
+sq="SELECT stock_code FROM tablesz"
+cursor.execute(sq)
+result=cursor.fetchall()
+listCode=[res[0] for res in result]
+for code in listCode:
+    mAnalyst.ifLowerShadow(code,20180119,True)
 # print(str(conn.db))
 # dUpdater.createTableOut("tableoutsz")
 # dUpdater.updateTableOut("sz")
