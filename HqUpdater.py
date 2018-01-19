@@ -58,7 +58,18 @@ class HqUpdater:
                     self.__cursor.execute(sq)
                     print("updated:"+str(stockCode))
                 except:
-                    print("update error"+str(stockCode))      
+                    print("update error"+str(stockCode))  
+    
+    def ifUpdated(self,dt):
+        sq="SELECT MAX(trade_date) FROM tabledate"
+        self.__cursor.execute(sq)
+        result=self.__cursor.fetchone()
+        endDate=result[0] 
+#         dt=time.strftime("%Y%d%m",time.localtime())
+        if int(dt)<=int(endDate):
+            return True
+        else:
+            return False
 ###################################################################################                               
     def getListHq(self,hq):
         if isinstance(hq, list):         

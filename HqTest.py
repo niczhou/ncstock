@@ -5,19 +5,26 @@ import datetime
 import json
 from HqAnalyst import HqAnalyst
 from HqUtil import HqUtil
-from HsUpdater import HsUpdater
-# from HsWorm import HsWorm
+from XlTool import XlTool
 from HqUpdater import HqUpdater
+from DBUpdater import DBUpdater
 import threadpool
 
 conn = pymysql.connect(host="localhost",user="root",passwd="",db="nxstock",charset="utf8")
 cursor=conn.cursor()
- 
-mHsUpdater=HsUpdater(conn)
+
 mHqUpdater=HqUpdater(conn)
 mAnalyst=HqAnalyst(conn)
+dUpdater=DBUpdater(conn)
 mUtil = HqUtil()
+xTool=XlTool()
 
+xTool.tableToXl(conn,"tableoutsz","2018018")
+# print(str(conn.db))
+# dUpdater.createTableOut("tableoutsz")
+# dUpdater.updateTableOut("sz")
+
+# mTool.createXl('pyt5','backup/test')
 # mAnalyst.ifBuyByCode("300498")
 # mHsUpdater.createTableHs("tablesh")
 # mHsUpdater.createTableHs("tablesz")   
