@@ -25,10 +25,10 @@ cursor.execute(sq)
 result=cursor.fetchall()
 listCode=[res[0] for res in result]
 for code in listCode:
-    mAnalyst.ifLowerShadow(code,20180119,True)
+    mAnalyst.ifBuyByDate(code,20180119,1)
 # print(str(conn.db))
-# dUpdater.createTableOut("tableoutsz")
-# dUpdater.updateTableOut("sz")
+# dUpdater.createTableOut("tableoutsh")
+# dUpdater.updateTableOut("sh")
 
 # mTool.createXl('pyt5','backup/test')
 # mAnalyst.ifBuyByCode("300498")
