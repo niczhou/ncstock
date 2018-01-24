@@ -51,7 +51,7 @@ class HqAnalyst:
         for codeHs in listHs:
             self.ifBuyAlltimeByCode(codeHs,HqStrategy)
 ####################################################################################      
-    def ifBuyAlltimeByCode(self,stockCode,HqStrategy=0):     
+    def dateToBuy(self,stockCode,HqStrategy=0):     
         sq="SELECT trade_date FROM `%s`"%stockCode
         self.__cursor.execute(sq)
         result=self.__cursor.fetchall()
@@ -115,7 +115,7 @@ class HqAnalyst:
             print("invalid input,allowed only:0,1")
             return    
         index="close"
-        isBuy=False
+        isBottom=False
         maxIndex=minIndex=avgIndex=0.00
         dateMaxIndex=minDate=0   
         maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
@@ -140,14 +140,14 @@ class HqAnalyst:
                             if minEndDiff<valDateDiffMinEnd:
                                 maxMinDiff=self.dateDiff(stockCode,maxDate,minDate)
                                 if maxMinDiff>valDateDiffMaxMin:
-                                    isBuy=True
-        #     if isBuy==True:
-            print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
-              +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
-              +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
-              +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
+                                    isBottom=True
+        #     if isBottom==True:
+#             print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tclo:"+str(isBottom)+"\tmax:"+str(maxDate)+"-"+str(round(maxIndex,2)) \
+#               +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
+#               +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
+#               +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
                  
-        return isBuy     
+        return isBottom     
 
 #####amount---------------------------amount--------------------------amount------------------------------
     def ifAmountBottom(self,stockCode,date1,date2,HqStrategy=0):
@@ -171,7 +171,7 @@ class HqAnalyst:
             print("invalid input,allowed only:0,1")
             return
         index="amount"
-        isBuy=False
+        isBottom=False
         maxIndex=minIndex=avgIndex=0.00
         maxDate=minDate=0   
         maxIndex=self.getMaxByIndex(stockCode,index,startDate,endDate)
@@ -195,14 +195,14 @@ class HqAnalyst:
                         if minEndDiff<valDateDiffMinEnd:
                             maxMinDiff=self.dateDiff(stockCode,maxDate,minDate)
                             if maxMinDiff>valDateDiffMaxMin:
-                                isBuy=True
-        #     if isBuy==True:
-#                 print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBuy)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
+                                isBottom=True
+        #     if isBottom==True:
+#                 print(str(stockCode)+"-"+str(startDate)+"-"+str(endDate)+"\tamo:"+str(isBottom)+"\tmax:"+str(maxDate)+"-"+str(maxIndex) \
 #                   +"\tmin:"+str(minDate)+"-"+str(minIndex)+"\tavg:"+str(avgIndex) \
 #                   +"\tm/m:"+str(round(minMax,3))+"\tm/a:"+str(round(minAvg,3))+"\tratio:" \
 #                   +str(round(aRatio,3))+"\tmeDiff:"+str(minEndDiff)+"\tmmDiff:"+str(maxMinDiff))
         
-        return isBuy 
+        return isBottom 
     def ifLowerShadow(self,stockCode,endDate,isLongShadow=False):
         if isLongShadow==False:
             valLowOpen=0.983

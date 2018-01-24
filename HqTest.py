@@ -20,12 +20,12 @@ mUtil = HqUtil()
 xTool=XlTool()
 # 
 # xTool.tableToXl(conn,"tableoutsz","2018018")
-sq="SELECT stock_code FROM tablesz"
+sq="SELECT stock_code FROM tablesz LIMIT 1000"
 cursor.execute(sq)
 result=cursor.fetchall()
 listCode=[res[0] for res in result]
 for code in listCode:
-    mAnalyst.ifBuyByDate(code,20180119,1)
+    mAnalyst.dateToBuy(code,1)
 # print(str(conn.db))
 # dUpdater.createTableOut("tableoutsh")
 # dUpdater.updateTableOut("sh")
