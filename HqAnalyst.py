@@ -226,7 +226,7 @@ class HqAnalyst:
                 if sLow/sClose<valLowClose:
                     if sClose/sOpen>valCloseOpen:
                         isLowerShadow=True
-                        print("%s:lowerShadow-open:%r,close:%r,low:%r"%(stockCode,str(sOpen),str(sClose),str(sLow)))
+#                         print("%s:lowerShadow-open:%r,close:%r,low:%r"%(stockCode,str(sOpen),str(sClose),str(sLow)))
         #         print(isLowerShadow)
             return isLowerShadow  
         except:

@@ -56,7 +56,7 @@ class HqUpdater:
 #                 print(sq)
                 try:
                     self.__cursor.execute(sq)
-                    print("updated:"+str(stockCode))
+                    print("updated:"+str(hq[i][0]).replace("-","")+str(stockCode))
                 except:
                     print("update error"+str(stockCode))  
     
