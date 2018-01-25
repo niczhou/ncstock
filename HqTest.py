@@ -19,13 +19,16 @@ dUpdater=DBUpdater(conn)
 mUtil = HqUtil()
 xTool=XlTool()
 # 
+# mHqUpdater.updateTableDate()
 # xTool.tableToXl(conn,"tableoutsz","2018018")
-sq="SELECT stock_code FROM tablesz LIMIT 1000"
-cursor.execute(sq)
-result=cursor.fetchall()
-listCode=[res[0] for res in result]
-for code in listCode:
-    mAnalyst.dateToBuy(code,1)
+# sq="SELECT stock_code FROM tablesz LIMIT 1000"
+# cursor.execute(sq)
+# result=cursor.fetchall()
+# listCode=[res[0] for res in result]
+# for code in listCode:
+#     mAnalyst.dateToBuy(code,1)
+# dUpdater.createTableZs("399006")
+# mHqUpdater.updateZs("399006",20170601,20180125)
 # print(str(conn.db))
 # dUpdater.createTableOut("tableoutsh")
 # dUpdater.updateTableOut("sh")

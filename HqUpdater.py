@@ -56,7 +56,7 @@ class HqUpdater:
 #                 print(sq)
                 try:
                     self.__cursor.execute(sq)
-                    print("updated:"+str(hq[i][0]).replace("-","")+str(stockCode))
+                    print("updated:"+str(stockCode)+"-"+str(hq[i][0]).replace("-",""))
                 except:
                     print("update error"+str(stockCode))  
     
@@ -70,7 +70,62 @@ class HqUpdater:
             return True
         else:
             return False
-###################################################################################                               
+    def updateZs(self,zs,startDate,endDate): 
+        hq=self.getHq(zs, startDate, endDate,True)
+#         print(hq)
+        if isinstance(hq, list):         
+#             listHq=[['' for row in range(10)] for col in range(len(hq))]
+            index=''
+            for i in range(len(hq))[::-1]:
+                sq="INSERT INTO `tablezs" + zs + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) SELECT "\
+#                 print(hq[i])
+                for j in range(10):
+                    if j==0:
+                        index="'"+str(hq[i][j]).replace("-","")+"'"
+                    elif j==4:   
+                        index="'"+str(hq[i][j]).replace("%","")+"'"
+                    elif j==9:   
+                        index="'"+str(hq[i][j]).replace("-","0")+"'"
+                    else:
+                        index="'"+hq[i][j]+"'"
+#                     listHq[i][j]=index
+                    if j!=9:
+                        sq=sq+str(index)+","
+                    else:
+#                    check if record exists 
+                        sq=sq+index+" FROM dual WHERE NOT EXISTS(SELECT trade_date FROM `tablezs"+str(zs)\
+                            +"` WHERE trade_date='"+str(hq[i][0]).replace("-","")+"')"
+#                 print(sq)
+                try:
+                    self.__cursor.execute(sq)
+                    print("updated:zs"+str(zs)+"-"+str(hq[i][0]).replace("-",""))
+                except:
+                    print("update error"+str(zs)) 
+#######################################################################################################
+    def updateTableDate(self):
+        listZs=["000001","399001"]       
+        lenDate=0
+        listDate=[]
+        for zs in listZs:
+            sq="SELECT trade_date FROM `tablezs"+zs+"`"
+            self.__cursor.execute(sq)
+            result=self.__cursor.fetchall()
+            if lenDate<len(result):
+                lenDate=len(result)
+                listDate=[result[i][0] for i in range(len(result))]
+        
+#         print("%d"%lenDate+str(listDate))
+        for uDate in listDate:
+            sq="INSERT INTO tableDate(trade_date) SELECT '"+str(uDate) \
+                +"' FROM dual WHERE NOT EXISTS(SELECT trade_date FROM tabledate WHERE trade_date="\
+                +str(uDate)+")"
+            print(sq)
+            try:
+                self.__cursor.execute(sq)
+            except:
+                pass
+#                 print("update fail %d"+uDate)              
+###################################################################################################                               
     def getListHq(self,hq):
         if isinstance(hq, list):         
             listHq=[['' for row in range(10)] for col in range(len(hq))]
@@ -88,9 +143,13 @@ class HqUpdater:
 #                     print(listHq[i][j])
             return listHq    
     
-    def getHq(self,stockCode,startDate,endDate):
-        url="http://q.stock.sohu.com/hisHq?code=cn_"+str(stockCode)\
-            +"&start=" +str(startDate) + "&end=" +str(endDate)
+    def getHq(self,stockCode,startDate,endDate,isZs=False):
+        if isZs==False:
+            url="http://q.stock.sohu.com/hisHq?code=cn_"+str(stockCode)\
+                +"&start=" +str(startDate) + "&end=" +str(endDate)
+        else:
+            url="http://q.stock.sohu.com/hisHq?code=zs_"+str(stockCode)\
+                +"&start=" +str(startDate) + "&end=" +str(endDate)
         jsonHq=self.parseUrl(url)
 #         print("return:"+str(jsonHq))
         if isinstance(jsonHq,list):

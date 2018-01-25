@@ -33,9 +33,12 @@ def updaterHq():
     else:
         print("start updating")
         startDate=mUtil.getEndDate(dt,conn)
+        mHqUpdater.updateZs("000001",startDate,dt)
+        mHqUpdater.updateZs("399001",startDate,dt)
+        mHqUpdater.updateZs("399006",startDate,dt)
         mHqUpdater.updateHqByHs("tablesz",startDate,dt)
         mHqUpdater.updateHqByHs("tablesh",startDate,dt)
-        dUpdater.updateTableDate()
+        mHqUpdater.updateTableDate()
     
 def ifBuyToday(HqStrategy=0):
     mAnalyst=HqAnalyst(conn)    
