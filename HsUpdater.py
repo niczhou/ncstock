@@ -87,4 +87,10 @@ class HsUpdater:
             except:
                 pass
 #                 print("update fail %d"+uDate)          
-        
+###########################################################################################################
+    def createTableZs(self,tableZsName): 
+        sq="CREATE TABLE IF NOT EXISTS %s(id INT NOT NULL AUTO_INCREMENT,trade_date INT,`open` DECIMAL(8,2),"\
+            +"`close` DECIMAL(8,2),`change` DECIMAL(8,2),`percent` DECIMAL(6,2),`low` DECIMAL(8,2),`high` DECIMAL(8,2),"\
+            +"volume BIGINT,amount DECIMAL(12,2),turnover DECIMAL(6,2),PRIMARY KEY(id),UNIQUE(trade_date))"%tableZsName
+        print(sq)
+        self.__cursor.execute(sq)         
