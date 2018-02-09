@@ -10,7 +10,7 @@ from DBUpdater import DBUpdater
 from HqUpdater import HqUpdater
 import threadpool
 
-conn = pymysql.connect(host="localhost",user="root",passwd="",db="nxstock",charset="utf8")
+conn = pymysql.connect(host="localhost",user="root",passwd="madeo",db="nxstock",charset="utf8")
 cursor=conn.cursor()
 
 def initDB():
