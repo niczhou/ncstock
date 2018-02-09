@@ -1,2 +1,0 @@
-# Sto
-stock
