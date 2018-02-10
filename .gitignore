@@ -4,3 +4,4 @@ input/
 __pycache__/
 *.project
 *.pydevproject
+.settings/

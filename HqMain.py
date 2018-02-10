@@ -24,7 +24,6 @@ def initDB():
     dUpdater.createTableDate("tabledate")
     
 def updaterHq():
-    dUpdater=DBUpdater(conn)
     mHqUpdater=HqUpdater(conn)
     mUtil=HqUtil()
     dt=time.strftime("%Y%d%m",time.localtime())

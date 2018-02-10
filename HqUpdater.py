@@ -18,7 +18,21 @@ class HqUpdater:
     def __init__(self,connection):
         self.__conn=connection
         self.__cursor=connection.cursor()    
-
+    def updaterHq(self):
+        mUtil=HqUtil()
+        dt=time.strftime("%Y%d%m",time.localtime())
+        if self.ifUpdated(dt):        
+            print("DB already updated!")
+        else:
+            print("start updating")
+            startDate=mUtil.getEndDate(dt,conn)
+            self.updateZs("000001",startDate,dt)
+            self.updateZs("399001",startDate,dt)
+            self.updateZs("399006",startDate,dt)
+            self.updateHqByHs("tablesz",startDate,dt)
+            self.updateHqByHs("tablesh",startDate,dt)
+            self.updateTableDate()
+        
     def updateHqByHs(self,tableHs,startDate,endDate):
         sq="SELECT stock_code FROM "+tableHs
         try:
