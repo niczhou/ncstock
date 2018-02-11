@@ -9,6 +9,7 @@ class NxUI():
     var_console = None
     et_user = None
     et_psw = None
+    __conn = None
     
     def __init__(self):
         self.create_view()
@@ -51,7 +52,7 @@ class NxUI():
         
 #       bg="#fe5228"  bg="#B0C4DE"       
         bt_login['command']=self.login
-        bt_update['command']=hqUpdater.updateHq
+        bt_update['command']=self.update_db
         self.log("hi,this is nx stock mall")
         top.mainloop()    
     
@@ -59,10 +60,14 @@ class NxUI():
         global var_console,et_user,et_psw
         helper = DBHelper()
         if helper.connect_db(et_user.get(),et_psw.get()):
+            self.__conn = helper.connect_db(et_user.get(),et_psw.get())
             self.log("login success,user: %s"%et_user.get())
         else:
             self.log("login fail,user: %s"%et_user.get())
-            
+    def update_db(self):
+        hqUpdater = HqUpdater(self.__conn)
+        hqUpdater.updateHq()
+               
     def log(self,str_log):
         global var_console
         var_console.set(str_log)

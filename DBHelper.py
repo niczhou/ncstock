@@ -10,8 +10,7 @@ class DBHelper():
 #         print("username:%s\npassword:%s"%(username,password))
         try:
             self.conn = pymysql.connect(host="localhost",user=username,passwd=password,db="nxstock",charset="utf8")
-            self.cursor = self.conn.cursor()
-            return True
+            return self.conn
         except:
-            return False
+            return None
             

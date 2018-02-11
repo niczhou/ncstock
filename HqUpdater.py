@@ -4,6 +4,7 @@ import time
 import urllib.request
 import urllib.error
 import threadpool
+from HqUtil import HqUtil
 
 class HqUpdater:
       
@@ -18,14 +19,14 @@ class HqUpdater:
     def __init__(self,connection):
         self.__conn=connection
         self.__cursor=connection.cursor()    
-    def updaterHq(self):
+    def updateHq(self):
         mUtil=HqUtil()
         dt=time.strftime("%Y%d%m",time.localtime())
         if self.ifUpdated(dt):        
             print("DB already updated!")
         else:
             print("start updating")
-            startDate=mUtil.getEndDate(dt,conn)
+            startDate=mUtil.getEndDate(dt,self.__conn)
             self.updateZs("000001",startDate,dt)
             self.updateZs("399001",startDate,dt)
             self.updateZs("399006",startDate,dt)
