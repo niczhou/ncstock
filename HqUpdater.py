@@ -33,6 +33,7 @@ class HqUpdater:
             self.updateHqByHs("tablesz",startDate,dt)
             self.updateHqByHs("tablesh",startDate,dt)
             self.updateTableDate()
+            print('update done!')
         
     def updateHqByHs(self,tableHs,startDate,endDate):
         sq="SELECT stock_code FROM "+tableHs
@@ -71,7 +72,7 @@ class HqUpdater:
 #                 print(sq)
                 try:
                     self.__cursor.execute(sq)
-                    print("updated:"+str(stockCode)+"-"+str(hq[i][0]).replace("-",""))
+                    print("update:"+str(stockCode)+"-"+str(hq[i][0]).replace("-",""))
                 except:
                     print("update error"+str(stockCode))  
     
@@ -81,10 +82,10 @@ class HqUpdater:
         result=self.__cursor.fetchone()
         endDate=result[0] 
 #         dt=time.strftime("%Y%d%m",time.localtime())
-        if int(dt)<=int(endDate):
-            return True
-        else:
+        if int(dt)>int(endDate):
             return False
+        else:
+            return True
     def updateZs(self,zs,startDate,endDate): 
         hq=self.getHq(zs, startDate, endDate,True)
 #         print(hq)
@@ -92,7 +93,7 @@ class HqUpdater:
 #             listHq=[['' for row in range(10)] for col in range(len(hq))]
             index=''
             for i in range(len(hq))[::-1]:
-                sq="INSERT INTO `tablezs" + zs + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) SELECT "\
+                sq="INSERT INTO `zs" + zs + "`(trade_date,`open`,`close`,`change`,`percent`,low,high,volume,amount,turnover) SELECT "\
 #                 print(hq[i])
                 for j in range(10):
                     if j==0:
@@ -108,12 +109,12 @@ class HqUpdater:
                         sq=sq+str(index)+","
                     else:
 #                    check if record exists 
-                        sq=sq+index+" FROM dual WHERE NOT EXISTS(SELECT trade_date FROM `tablezs"+str(zs)\
+                        sq=sq+index+" FROM dual WHERE NOT EXISTS(SELECT trade_date FROM `zs"+str(zs)\
                             +"` WHERE trade_date='"+str(hq[i][0]).replace("-","")+"')"
 #                 print(sq)
                 try:
                     self.__cursor.execute(sq)
-                    print("updated:zs"+str(zs)+"-"+str(hq[i][0]).replace("-",""))
+                    print("update:zs"+str(zs)+"-"+str(hq[i][0]).replace("-",""))
                 except:
                     print("update error"+str(zs)) 
 #######################################################################################################
@@ -122,7 +123,7 @@ class HqUpdater:
         lenDate=0
         listDate=[]
         for zs in listZs:
-            sq="SELECT trade_date FROM `tablezs"+zs+"`"
+            sq="SELECT trade_date FROM `zs"+zs+"`"
             self.__cursor.execute(sq)
             result=self.__cursor.fetchall()
             if lenDate<len(result):

@@ -115,7 +115,7 @@ class DBUpdater:
 #             print("error read tabledate")
 ###########################################################################################################
     def createTableZs(self,zsCode): 
-        sq="CREATE TABLE IF NOT EXISTS `tablezs%s`(id INT NOT NULL AUTO_INCREMENT,trade_date INT,`open` DECIMAL(8,2),"%zsCode\
+        sq="CREATE TABLE IF NOT EXISTS `zs%s`(id INT NOT NULL AUTO_INCREMENT,trade_date INT,`open` DECIMAL(8,2),"%zsCode\
             +"`close` DECIMAL(8,2),`change` DECIMAL(8,2),`percent` DECIMAL(6,2),`low` DECIMAL(8,2),`high` DECIMAL(8,2),"\
             +"volume BIGINT,amount DECIMAL(12,2),turnover DECIMAL(6,2),PRIMARY KEY(id),UNIQUE(trade_date))"
         print(sq)

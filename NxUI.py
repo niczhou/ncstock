@@ -40,9 +40,11 @@ class NxUI():
         
         fr_ctl = tk.Frame(top,bg="#B0C4DE",height=168)
         fr_ctl.pack(side=tk.TOP,fill=tk.X,ipadx=1,ipady=1)
-        bt_update = tk.Button(fr_ctl,text="upate db",font="Arial 8",width=12,height=2)
+        bt_update = tk.Button(fr_ctl,text="upate hq",font="Arial 8",width=12,height=2)
         bt_update.grid(row=0,column=0,padx=8)
         bt_analyze = tk.Button(fr_ctl,text="upate db",font="Arial 8",width=12,height=2)
+        bt_analyze.grid(row=0,column=1,padx=8)
+        bt_analyze = tk.Button(fr_ctl,text="analyze hq",font="Arial 8",width=12,height=2)
         bt_analyze.grid(row=0,column=1,padx=8)
         
         fr_console = tk.Frame(top)
@@ -52,7 +54,7 @@ class NxUI():
         
 #       bg="#fe5228"  bg="#B0C4DE"       
         bt_login['command']=self.login
-        bt_update['command']=self.update_db
+        bt_update['command']=self.update_hq
         self.log("hi,this is nx stock mall")
         top.mainloop()    
     
@@ -64,7 +66,7 @@ class NxUI():
             self.log("login success,user: %s"%et_user.get())
         else:
             self.log("login fail,user: %s"%et_user.get())
-    def update_db(self):
+    def update_hq(self):
         hqUpdater = HqUpdater(self.__conn)
         hqUpdater.updateHq()
                
