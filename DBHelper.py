@@ -6,10 +6,10 @@ class DBHelper():
     conn = None
     cursor = None
     
-    def connect_db(self,username,password):
+    def connect_db(self,hosturl,username,password,dbname):
 #         print("username:%s\npassword:%s"%(username,password))
         try:
-            self.conn = pymysql.connect(host="localhost",user=username,passwd=password,db="nxstock",charset="utf8")
+            self.conn = pymysql.connect(host=hosturl,user=username,passwd=password,db=dbname,charset="utf8")
             return self.conn
         except:
             return None

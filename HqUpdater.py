@@ -17,8 +17,21 @@ class HqUpdater:
     __cursor=None
     
     def __init__(self,connection):
-        self.__conn=connection
-        self.__cursor=connection.cursor()    
+        self.__conn = connection
+        self.__cursor = connection.cursor()
+    def updateZs(self):
+        mUtil=HqUtil()
+        dt=time.strftime("%Y%d%m",time.localtime())
+        if self.ifUpdated(dt):        
+            print("DB already updated!")
+        else:
+            print("start updating")
+            startDate=mUtil.getEndDate(dt,self.__conn)
+            self.updateZsByCode("000001",startDate,dt)
+            self.updateZsByCode("399001",startDate,dt)
+            self.updateZsByCode("399006",startDate,dt)
+            print('update done!')
+
     def updateHq(self):
         mUtil=HqUtil()
         dt=time.strftime("%Y%d%m",time.localtime())
@@ -27,9 +40,6 @@ class HqUpdater:
         else:
             print("start updating")
             startDate=mUtil.getEndDate(dt,self.__conn)
-            self.updateZs("000001",startDate,dt)
-            self.updateZs("399001",startDate,dt)
-            self.updateZs("399006",startDate,dt)
             self.updateHqByHs("tablesz",startDate,dt)
             self.updateHqByHs("tablesh",startDate,dt)
             self.updateTableDate()
@@ -86,7 +96,7 @@ class HqUpdater:
             return False
         else:
             return True
-    def updateZs(self,zs,startDate,endDate): 
+    def updateZsByCode(self,zs,startDate,endDate): 
         hq=self.getHq(zs, startDate, endDate,True)
 #         print(hq)
         if isinstance(hq, list):         
